@@ -32,4 +32,4 @@ Users will first need to "!tipbot register" for the bot to generate an address f
 The free account at block.io allows up to 100 different addresses, so 99 users can be served an address in your slack group.  If you want more, you'll need to get a paid block.io account.  If you have multiple slack groups, it is highly recommended that you create a new block.io account for each slack group you want to run the tipbot in.  You'll need seperate instances of the tipbot for each slack group.
 
 #Security:
-The bot operator has full control over everyone's addresses.  Users can withdraw to an address they control, and it is recommended to do so.  Significant amounts of money should not be stored in the slacktipbot address, even if you trust the bot operator completely.
+The bot operator has full control over everyone's addresses (that's you, not me, unless I set up the bot in your slack channel).  Users can withdraw to an address they control, and it is recommended to do so.  Significant amounts of money should not be stored in the slacktipbot address, even if you trust the bot operator completely.
