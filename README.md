@@ -9,3 +9,5 @@
 "!tipbot tip (user, coin, amount)" - tips user indicated amount to their address
 
 "!tipbot withdraw (coin, amount, address)" - withdraws indicated amount to indicated address.  Address must be the last word listed in command
+
+"!tibot help" - links to this readme
