@@ -69,8 +69,8 @@ def main():
 						print(sc.api_call("chat.postMessage", channel="#general", text='|l'+name['user']['name']+'|-- :  '+addresses['data']['addresses'][x]['address']+':  '+balance['data']['available_balance'], username='pybot', icon_emoji=':robot_face:'))
 					except:
 						continue
-			#if '!tipbot help' in str(j['text']):
-				#print(sc.api_call("chat.postMessage", channel="#general", text='|l!tipbot addresses|-- retrieves all registered users addresses and balances', username='pybot', icon_emoji=':robot_face:'))
+			if '!tipbot help' in str(j['text']):
+				print(sc.api_call("chat.postMessage", channel="#general", text='https://github.com/peoplma/slacktipbot', username='pybot', icon_emoji=':robot_face:'))
 def secondary():
 	try:
 		while True:
