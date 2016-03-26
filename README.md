@@ -10,4 +10,4 @@
 
 "!tipbot withdraw (coin, amount, address)" - withdraws indicated amount to indicated address.  Address must be the last word listed in command
 
-"!tibot help" - links to this readme
+"!tipbot help" - links to this readme
