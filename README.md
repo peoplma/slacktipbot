@@ -24,4 +24,4 @@
 `pip install slacksocket`
 
 #Installation:
-Install dependencies.  (Tested in python 3.4).  Create an account at [block.io](https://block.io/).  Add your secret_pin to the key_pin.py file, and get your API key and add that to the key_pin.py file.  In Slack, go to the https://dogecoinmods.slack.com/apps/manage/custom-integrations page and add a "bot".  Get the API key and add that to the key_pin.py file.
+Install dependencies.  (Tested in python 3.4).  Create an account at [block.io](https://block.io/).  Add your secret_pin to the key_pin.py file, and get your API key and add that to the key_pin.py file.  In Slack, go to the Slack "custom integratrions" page (by clicking in the upper left of your chat and choosing "Apps and integrations") and add a "bot".  Get the API key and add that to the key_pin.py file.
