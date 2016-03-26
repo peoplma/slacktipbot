@@ -42,7 +42,9 @@ def main():
 					for z in range(0,99,1):
 						try:
 							if users['members'][z]['name'] == usernames:
-								amount = float(''.join(ele for ele in j['text'] if ele.isdigit() or ele == '.'))
+								text = j['text']
+								textreplace = text.replace(usernames,'',1)
+								amount = float(''.join(ele for ele in textreplace if ele.isdigit() or ele == '.'))
 								tippeduser = users['members'][z]['id']
 								block_io.withdraw_from_labels(amounts=amount, from_labels=j['user'], to_labels=tippeduser)
 								print(j['user']+' tipped '+usernames)
