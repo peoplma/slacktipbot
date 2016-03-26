@@ -12,7 +12,7 @@
 
 "!tipbot help" - links to this readme
 
-#Dependencies
+#Dependencies:
 
 [Block.io](https://github.com/BlockIo/block_io-python/blob/master/README.md):
 `pip install block-io`
@@ -26,7 +26,7 @@
 #Installation:
 Install dependencies.  (Tested in python 3.4).  Create an account at [block.io](https://block.io/).  Add your secret_pin to the key_pin.py file, and get your API key and add that to the key_pin.py file.  In Slack, go to the Slack "custom integratrions" page (by clicking in the upper left of your chat and choosing "Apps and integrations") and add a "bot".  Get the API key and add that to the key_pin.py file.
 
-#Usage
+#Usage:
 Users will first need to "!tipbot register" for the bot to generate an address for them.  The user can then see their address with "!tipbot addresses".  Deposit to that address, and you can then tip to other registered users.  Or withdraw using "!tipbot withdraw".  All tips and withdraws are "on-chain".
 
 #Security:
