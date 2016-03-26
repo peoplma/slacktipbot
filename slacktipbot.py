@@ -6,7 +6,7 @@ from slacksocket import SlackSocket
 from slackclient import SlackClient
 from block_io import BlockIo
 version = 2 # API version
-from blockio_key_pin import *
+from key_pin import *
 block_io = BlockIo(blockio_api_key, blockio_secret_pin, version) 
 ss = SlackSocket(slack_token,translate=False) # translate will lookup and replace user and channel IDs with their human-readable names. default true. 
 sc = SlackClient(slack_token)
