@@ -51,6 +51,13 @@ def main():
 								print(sc.api_call("chat.postMessage", channel="#general", text=j['user']+' tipped '+usernames+' '+str(amount)+' doge!  :moon:', username='pybot', icon_emoji=':robot_face:'))
 						except:
 							continue
+			if '!tipbot check' in str(j['text']):
+				try:
+					balance = block_io.get_address_balance(labels=j['user'])
+					address = block_io.get_address_by_label(label=j['user'])
+					print(sc.api_call("chat.postMessage", channel="#general", text='%s - %s - %s doge' % (j['user'], address['data']['address'], balance['data']['available_balance']), username='pybot', icon_emoji=':robot_face:'))
+				except:
+					continue
 			if '!tipbot withdraw ' in str(j['text']):
 				print(splitmessage)
 				address = splitmessage.pop()
