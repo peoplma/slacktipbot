@@ -53,8 +53,9 @@ def main():
 							continue
 			if '!tipbot check' in str(j['text']):
 				try:
-					balance = blockio.get_address_balance(labels=j['user'])
-					print(sc.api_call("chat.postMessage", channel="#general", text=j['user']+' has ' +str(balance)+' doge!', username='pybot', icon_emoji=':robot_face:'))
+					balance = block_io.get_address_balance(labels=j['user'])
+					address = block_io.get_address_by_label(label=j['user'])
+					print(sc.api_call("chat.postMessage", channel="#general", text='%s - %s - %s doge' % (j['user'], address, balance), username='pybot', icon_emoji=':robot_face:'))
 				except:
 					continue
 			if '!tipbot withdraw ' in str(j['text']):
