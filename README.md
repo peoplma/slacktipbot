@@ -4,6 +4,8 @@
 
 "!tipbot register" - generates a new address for user
 
+"!tipbot check" - shows address and balance for user
+
 "!tipbot addresses" - lists all registered users' addresses and their balances
 
 "!tipbot tip (user, coin, amount)" - tips user indicated amount to their address
