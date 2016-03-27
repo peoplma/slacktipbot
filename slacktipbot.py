@@ -7,8 +7,8 @@ from slackclient import SlackClient
 from block_io import BlockIo
 version = 2 # API version
 from key_pin import *
-block_io = BlockIo(blockio_api_key, blockio_secret_pin, version) 
-ss = SlackSocket(slack_token,translate=False) # translate will lookup and replace user and channel IDs with their human-readable names. default true. 
+block_io = BlockIo(blockio_api_key, blockio_secret_pin, version)
+ss = SlackSocket(slack_token,translate=False) # translate will lookup and replace user and channel IDs with their human-readable names. default true.
 sc = SlackClient(slack_token)
 
 def main():
@@ -20,10 +20,10 @@ def main():
 		for i in range(0, 99, 1):
 			try:
 				usernames.add(users['members'][i]['name'])
-				userids.add(users['members'][i]['id'])	
+				userids.add(users['members'][i]['id'])
 			except:
 				continue
-		enumeration = enumerate(usernames)		
+		enumeration = enumerate(usernames)
 		print(event.json)
 		j = json.loads(event.json)
 		print(j['type'])
@@ -51,6 +51,12 @@ def main():
 								print(sc.api_call("chat.postMessage", channel="#general", text=j['user']+' tipped '+usernames+' '+str(amount)+' doge!  :moon:', username='pybot', icon_emoji=':robot_face:'))
 						except:
 							continue
+			if '!tipbot check' in str(j['text']):
+				try:
+					balance = blockio.get_address_balance(labels=j['user'])
+					print(sc.api_call("chat.postMessage", channel="#general", text=j['user']+' has ' +str(balance)+' doge!', username='pybot', icon_emoji=':robot_face:'))
+				except:
+					continue
 			if '!tipbot withdraw ' in str(j['text']):
 				print(splitmessage)
 				address = splitmessage.pop()
@@ -62,7 +68,7 @@ def main():
 				print(j['user']+' withdrew to'+address)
 				print(sc.api_call("chat.postMessage", channel="#general", text=j['user']+' withdrew '+str(amount)+' doge to '+str(address)+'!  :+1:', username='pybot', icon_emoji=':robot_face:'))
 			if '!tipbot addresses' in str(j['text']):
-				addresses = block_io.get_my_addresses()			
+				addresses = block_io.get_my_addresses()
 				for x in range(1,99,1):
 					try:
 						address = str(addresses['data']['addresses'][x]['address'])
