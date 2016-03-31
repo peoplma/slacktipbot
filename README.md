@@ -10,7 +10,7 @@
 
 "!tipbot tip (user, coin, amount)" - tips user indicated amount to their address
 
-"!tipbot make it rain (coin, amount)" - tips everyone registered a share of indicated amount
+"!tipbot make it rain (coin, amount)" - tips everyone registered a share of indicated amount. Amount must be the last word in the command
 
 "!tipbot withdraw (coin, amount, address)" - withdraws indicated amount to indicated address.  Address must be the last word listed in command
 

@@ -56,14 +56,14 @@ def main():
 					addresses = block_io.get_my_addresses()
 					textamount = splitmessage.pop();
 					amount = float(''.join(ele for ele in textamount if ele.isdigit() or ele == '.'))
-					amounteach = (amount - 1) / (len(addresses['data']['addresses']) - 1)
-								#(amount - fee) / (number of addresses - current user)
-					tousers = str(','.join(addr['label'] for addr in addresses['data']['addresses'] if addr['label'] != j['user']))
-					toeach = str(','.join('%.8f' % amounteach for addr in addresses['data']['addresses'] if addr['label'] != j['user']))
+					amounteach = (amount - 1) / (len(addresses['data']['addresses']) - 2)
+								#(amount - fee) / (number of addresses - current user & default)
+					tousers = str(','.join(addr['label'] for addr in addresses['data']['addresses'] if (addr['label'] != j['user'] and addr['label'] != 'default')))
+					toeach = str(','.join('%.8f' % amounteach for addr in addresses['data']['addresses'] if (addr['label'] != j['user'] and addr['label'] != 'default')))
 					print(tousers)
 					print(toeach)
 					block_io.withdraw_from_labels(amounts=toeach, from_labels=j['user'], to_labels=tousers)
-					print(sc.api_call("chat.postMessage", channel="#general", text=j['user']+' tipped '+tousers+' '+'%.8f' & amounteach+' doge!  :moon:', username='pybot', icon_emoji=':robot_face:'))
+					print(sc.api_call("chat.postMessage", channel="#general", text=j['user']+' tipped '+tousers+' '+'%.8f' % amounteach+' doge!  :moon:', username='pybot', icon_emoji=':robot_face:'))
 				except:
 					continue
 			if '!tipbot check' in str(j['text']):
