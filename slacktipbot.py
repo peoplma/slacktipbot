@@ -35,8 +35,6 @@ def main():
 		try:
 			users = sc.api_call("users.list")
 			for user in users['members']:
-				if user['name'] is 'default':
-					continue
 				id2name[user['id']] = user['name']
 				name2id[user['name']] = user['id']
 		except:
@@ -48,7 +46,7 @@ def main():
 		print(splitmessage)
 		tipindex = 0
 		for i in range(0, len(splitmessage), 1):
-			if splitmessage is '!tipbot':
+			if splitmessage[i] is '!tipbot':
 				tipindex = i
 				break
 
