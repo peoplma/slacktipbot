@@ -12,7 +12,7 @@
 
 "!tipbot make it rain (coin, amount)" - tips everyone registered a share of indicated amount. Amount must be the last word in the command
 
-"!tipbot withdraw (coin, amount, address)" - withdraws indicated amount to indicated address.  Address must be the last word listed in command
+"!tipbot withdraw amount coin address" - withdraws indicated amount to indicated address.  Address must be the last word listed in command
 
 "!tipbot help" - links to this readme
 
