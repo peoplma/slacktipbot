@@ -65,10 +65,10 @@ def main():
 			coin = splitmessage[tipindex + 3]
 
 			# get list of valid users from command
-			users = {}
+			users = []
 			for i in range(4, len(splitmessage), 1):
 				if splitmessage[i] in name2id.keys():
-					users.add(splitmessage[i]);
+					users.append(splitmessage[i]);
 
 			# build api strings
 			tousers = str(','.join(name2id[user] for user in users))
