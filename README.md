@@ -6,13 +6,13 @@
 
 "!tipbot check" - shows address and balance for user
 
-"!tipbot addresses" - lists all registered users' addresses and their balances
+"!tipbot addresses _coin_" - lists all registered users' addresses and their balances by coin
 
-"!tipbot tip (user, coin, amount)" - tips user indicated amount to their address
+"!tipbot tip _amount_ _coin_ _users_" - tips users indicated amount to their address
 
-"!tipbot make it rain (coin, amount)" - tips everyone registered a share of indicated amount. Amount must be the last word in the command
+"!tipbot make it rain _amount_ _coin_" - tips everyone registered a share of indicated amount
 
-"!tipbot withdraw amount coin address" - withdraws indicated amount to indicated address.  Address must be the last word listed in command
+"!tipbot withdraw _amount_ _coin_ _address_" - withdraws indicated amount to indicated address
 
 "!tipbot help" - links to this readme
 

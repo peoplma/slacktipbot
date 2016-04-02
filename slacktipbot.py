@@ -16,229 +16,261 @@ sc = SlackClient(slack_token)
 def main():
 	time.sleep(1)
 	for event in ss.events():
-		usernames = set()
-		userids = set()
-		users = sc.api_call("users.list")
-		for i in range(0, 99, 1):
-			try:
-				usernames.add(users['members'][i]['name'])
-				userids.add(users['members'][i]['id'])	
-			except:
-				continue
-		enumeration = enumerate(usernames)		
-		print(event.json)
 		j = json.loads(event.json)
 		print(j['type'])
-		if j['type'] == 'message':
-			splitmessage = j['text'].split( )
-			print(splitmessage)
-			print(j['text'])						
+		if j['type'] != 'message':
+			continue
 
-			########### FOR TIPPING #########
-				
-			for (x, (usernames)) in enumeration:
-				if '!tipbot tip ' in str(j['text']) and usernames in str(j['text']) and 'doge' in str(j['text']):
-					print(usernames)
-					for z in range(0,99,1):
-						try:
-							print(users['members'][z]['name'])
-							#tippeduser = users['members'][z]['id']
-							#print(tippeduser)
-							#print(usernames)
-							if users['members'][z]['name'] == usernames:
-								#print(tippeduser)
-								text = j['text']
-								textreplace = text.replace(usernames,'',1)
-								amount = float(''.join(ele for ele in textreplace if ele.isdigit() or ele == '.'))
-								tippeduser = users['members'][z]['id']
-								block_io_doge.withdraw_from_labels(amounts=amount, from_labels=j['user'], to_labels=tippeduser)
-								print(tippeduser)
-								print(j['user']+' tipped '+usernames)
-								print(sc.api_call("chat.postMessage", channel="#general", text=j['user']+' tipped '+usernames+' '+str(amount)+' doge!  :moon:', username='pybot', icon_emoji=':robot_face:'))
-						except:
-							traceback.print_exc()
-				if '!tipbot tip ' in str(j['text']) and usernames in str(j['text']) and 'btc' in str(j['text']):
-					print(usernames)
-					for z in range(0,99,1):
-						try:
-							print(users['members'][z]['name'])
-							#tippeduser = users['members'][z]['id']
-							#print(tippeduser)
-							#print(usernames)
-							if users['members'][z]['name'] == usernames:
-								#print(tippeduser)
-								text = j['text']
-								textreplace = text.replace(usernames,'',1)
-								amount = float(''.join(ele for ele in textreplace if ele.isdigit() or ele == '.'))
-								tippeduser = users['members'][z]['id']
-								block_io_btc.withdraw_from_labels(amounts=amount, from_labels=j['user'], to_labels=tippeduser)
-								print(tippeduser)
-								print(j['user']+' tipped '+usernames)
-								print(sc.api_call("chat.postMessage", channel="#general", text=j['user']+' tipped '+usernames+' '+str(amount)+' btc!  :moon:', username='pybot', icon_emoji=':robot_face:'))
-						except:
-							traceback.print_exc()
-				if '!tipbot tip ' in str(j['text']) and usernames in str(j['text']) and 'ltc' in str(j['text']):
-					print(usernames)
-					for z in range(0,99,1):
-						try:
-							print(users['members'][z]['name'])
-							#tippeduser = users['members'][z]['id']
-							#print(tippeduser)
-							#print(usernames)
-							if users['members'][z]['name'] == usernames:
-								#print(tippeduser)
-								text = j['text']
-								textreplace = text.replace(usernames,'',1)
-								amount = float(''.join(ele for ele in textreplace if ele.isdigit() or ele == '.'))
-								tippeduser = users['members'][z]['id']
-								block_io_ltc.withdraw_from_labels(amounts=amount, from_labels=j['user'], to_labels=tippeduser)
-								print(tippeduser)
-								print(j['user']+' tipped '+usernames)
-								print(sc.api_call("chat.postMessage", channel="#general", text=j['user']+' tipped '+usernames+' '+str(amount)+' ltc!  :moon:', username='pybot', icon_emoji=':robot_face:'))
-						except:
-							traceback.print_exc()
-							
-			########### FOR DOGECOIN #########
-			
-			if '!tipbot make it rain ' in str(j['text']) and 'doge' in str(j['text']):
+		if 'tipbot kill all humans' in str(j['text']):
+			print(sc.api_call("chat.postMessage", channel="#general", text='http://i.imgur.com/nwLy8Rd.jpg', username='pybot', icon_emoji=':robot_face:'))
+			continue
+
+
+		if '!tipbot' not in j['text']:
+			continue
+
+		# user name/id lookups
+		id2name = {}
+		name2id = {}
+		try:
+			users = sc.api_call("users.list")
+			for user in users['members']:
+				if user['name'] is 'default':
+					continue
+				id2name[user['id']] = user['name']
+				name2id[user['name']] = user['id']
+		except:
+			print('failed to build user lookups')
+			continue
+
+		# split message and find '!tipbot'
+		splitmessage = j['text'].split()
+		print(splitmessage)
+		tipindex = 0
+		for i in range(0, len(splitmessage), 1):
+			if splitmessage is '!tipbot':
+				tipindex = i
+				break
+
+		# !tipbot tip
+		if splitmessage[tipindex + 1] is 'tip':
+			if not isfloat(splitmessage[tipindex + 2]):
+				print('amount not float ='+splitmessage[tipindex + 2])
+				continue
+			amount = float(splitmessage[tipindex + 2])
+			if amount < 0:
+				print('negative amount ='+splitmessage[tipindex + 2])
+				continue
+
+			coin = splitmessage[tipindex + 3]
+
+			# get list of valid users from command
+			users = {}
+			for i in range(4, len(splitmessage), 1):
+				if splitmessage[i] in name2id.keys():
+					users.add(splitmessage[i]);
+
+			# build api strings
+			tousers = str(','.join(name2id[user] for user in users))
+			toreadable = str(','.join(users))
+			toeach = str(','.join(str(amount) for user in users))
+
+			print(id2name[j['user']]+' ('+j['user']+') tipped '+str(amount)+' '+coin+' to '+toreadable+' ('+tousers+')')
+
+			if coin is 'doge':
+				try:
+					block_io_doge.withdraw_from_labels(amounts=toeach, from_labels=j['user'], to_labels=tousers)
+					print(sc.api_call("chat.postMessage", channel="#general", text=id2name[j['user']]+' tipped '+toreadable+' '+str(amount)+' '+coin+'!  :moon:', username='pybot', icon_emoji=':robot_face:'))
+				except:
+					traceback.print_exc()
+					print('failed to tip doge')
+					continue
+			elif coin is 'ltc':
+				try:
+					block_io_ltc.withdraw_from_labels(amounts=toeach, from_labels=j['user'], to_labels=tousers)
+					print(sc.api_call("chat.postMessage", channel="#general", text=id2name[j['user']]+' tipped '+toreadable+' '+str(amount)+' '+coin+'!  :moon:', username='pybot', icon_emoji=':robot_face:'))
+				except:
+					traceback.print_exc()
+					print('failed to tip ltc')
+					continue
+			elif coin is 'btc':
+				try:
+					block_io_btc.withdraw_from_labels(amounts=toeach, from_labels=j['user'], to_labels=tousers)
+					print(sc.api_call("chat.postMessage", channel="#general", text=id2name[j['user']]+' tipped '+toreadable+' '+str(amount)+' '+coin+'!  :moon:', username='pybot', icon_emoji=':robot_face:'))
+				except:
+					traceback.print_exc()
+					print('failed to tip btc')
+					continue
+
+		# !tipbot make it rain
+		elif splitmessage[tipindex + 1] is 'make':
+			if splitmessage[tipindex + 2] is not 'it' or splitmessage[tipindex + 3] is not 'rain':
+				continue
+
+			if not isfloat(splitmessage[tipindex + 4]):
+				print('amount not float ='+splitmessage[tipindex + 4])
+				continue
+			amount = float(splitmessage[tipindex + 4])
+			if amount < 0:
+				print('negative tip ='+splitmessage[tipindex + 4])
+				continue
+
+			coin = splitmessage[tipindex + 5]
+
+			if coin is 'doge':
 				try:
 					addresses = block_io_doge.get_my_addresses()
-					textamount = splitmessage.pop();
-					amount = float(''.join(ele for ele in textamount if ele.isdigit() or ele == '.'))
-					amounteach = (amount - 1) / (len(addresses['data']['addresses']) - 2)
-								#(amount - fee) / (number of addresses - current user)
+					amounteach = amount / (len(addresses['data']['addresses']) - 2)
+					# amount / (number of addresses - current user & default)
 					tousers = str(','.join(addr['label'] for addr in addresses['data']['addresses'] if (addr['label'] != j['user'] and addr['label'] != 'default')))
+					toreadable = str(','.join(id2name[addr['label']] for addr in addresses['data']['addresses'] if (addr['label'] != j['user'] and addr['label'] != 'default')))
 					toeach = str(','.join('%.8f' % amounteach for addr in addresses['data']['addresses'] if (addr['label'] != j['user'] and addr['label'] != 'default')))
-					print(tousers)
-					print(toeach)
+					print(id2name[j['user']]+' ('+j['user']+') made it rain on '+toreadable+' ('+tousers+') '+str(amount)+' ('+'%.8f' % amounteach+' each)');
 					block_io_doge.withdraw_from_labels(amounts=toeach, from_labels=j['user'], to_labels=tousers)
-					print(sc.api_call("chat.postMessage", channel="#general", text=j['user']+' tipped everyone '+'%.8f' % amounteach+' doge!  :moon:', username='pybot', icon_emoji=':robot_face:'))
+					print(sc.api_call("chat.postMessage", channel="#general", text=id2name[j['user']]+' tipped  '+toreadable+' '+'%.8f' % amounteach+' '+coin+'!  :moon:', username='pybot', icon_emoji=':robot_face:'))
 				except:
+					traceback.print_exc()
+					print('failed to make it rain doge')
 					continue
-			if '!tipbot withdraw ' in str(j['text']) and 'doge' in str(j['text']):
-				print(splitmessage)
-				address = splitmessage.pop()
-				print(address)
-				print(splitmessage)
-				amount = float(''.join(ele for ele in splitmessage[2] if ele.isdigit() or ele == '.'))
-				print(amount)
-				block_io_doge.withdraw_from_labels(amounts=amount, from_labels=j['user'], to_addresses=address)
-				print(j['user']+' withdrew to'+address)
-				print(sc.api_call("chat.postMessage", channel="#general", text=j['user']+' withdrew '+str(amount)+' doge to '+str(address)+'!  :+1:', username='pybot', icon_emoji=':robot_face:'))
-			if '!tipbot doge addresses' in str(j['text']):
-				addresses = block_io_doge.get_my_addresses()			
-				for x in range(1,99,1):
-					try:
-						address = str(addresses['data']['addresses'][x]['address'])
-						balance = block_io_doge.get_address_balance(addresses=address)
-						name = sc.api_call("users.info", user=addresses['data']['addresses'][x]['label'])
-						print(sc.api_call("chat.postMessage", channel="#general", text='|l'+name['user']['name']+'|-- :  '+addresses['data']['addresses'][x]['address']+':  '+balance['data']['available_balance'], username='pybot', icon_emoji=':robot_face:'))
-					except:
-						continue
-						
-			########## FOR BITCOIN ############
-			
-			if '!tipbot make it rain ' in str(j['text']) and 'btc' in str(j['text']):
-				try:
-					addresses = block_io_btc.get_my_addresses()
-					textamount = splitmessage.pop();
-					amount = float(''.join(ele for ele in textamount if ele.isdigit() or ele == '.'))
-					amounteach = (amount - 1) / (len(addresses['data']['addresses']) - 2)
-								#(amount - fee) / (number of addresses - current user)
-					tousers = str(','.join(addr['label'] for addr in addresses['data']['addresses'] if (addr['label'] != j['user'] and addr['label'] != 'default')))
-					toeach = str(','.join('%.8f' % amounteach for addr in addresses['data']['addresses'] if (addr['label'] != j['user'] and addr['label'] != 'default')))
-					print(tousers)
-					print(toeach)
-					block_io_btc.withdraw_from_labels(amounts=toeach, from_labels=j['user'], to_labels=tousers)
-					print(sc.api_call("chat.postMessage", channel="#general", text=j['user']+' tipped everyone '+'%.8f' % amounteach+' btc!  :moon:', username='pybot', icon_emoji=':robot_face:'))
-				except:
-					continue
-			if '!tipbot withdraw ' in str(j['text']) and 'btc' in str(j['text']):
-				print(splitmessage)
-				address = splitmessage.pop()
-				print(address)
-				print(splitmessage)
-				amount = float(''.join(ele for ele in splitmessage[2] if ele.isdigit() or ele == '.'))
-				print(amount)
-				block_io_btc.withdraw_from_labels(amounts=amount, from_labels=j['user'], to_addresses=address)
-				print(j['user']+' withdrew to'+address)
-				print(sc.api_call("chat.postMessage", channel="#general", text=j['user']+' withdrew '+str(amount)+' btc to '+str(address)+'!  :+1:', username='pybot', icon_emoji=':robot_face:'))
-			if '!tipbot btc addresses' in str(j['text']):
-				addresses = block_io_btc.get_my_addresses()			
-				for x in range(1,99,1):
-					try:
-						address = str(addresses['data']['addresses'][x]['address'])
-						balance = block_io_btc.get_address_balance(addresses=address)
-						name = sc.api_call("users.info", user=addresses['data']['addresses'][x]['label'])
-						print(sc.api_call("chat.postMessage", channel="#general", text='|l'+name['user']['name']+'|-- :  '+addresses['data']['addresses'][x]['address']+':  '+balance['data']['available_balance'], username='pybot', icon_emoji=':robot_face:'))
-					except:
-						continue
-			
-			########## FOR LITECOIN ################
-			
-			if '!tipbot make it rain ' in str(j['text']) and 'ltc' in str(j['text']):
+			elif coin is 'ltc':
 				try:
 					addresses = block_io_ltc.get_my_addresses()
-					textamount = splitmessage.pop();
-					amount = float(''.join(ele for ele in textamount if ele.isdigit() or ele == '.'))
-					amounteach = (amount - 1) / (len(addresses['data']['addresses']) - 2)
-								#(amount - fee) / (number of addresses - current user)
+					amounteach = amount / (len(addresses['data']['addresses']) - 2)
+					# amount / (number of addresses - current user & default)
 					tousers = str(','.join(addr['label'] for addr in addresses['data']['addresses'] if (addr['label'] != j['user'] and addr['label'] != 'default')))
+					toreadable = str(','.join(id2name[addr['label']] for addr in addresses['data']['addresses'] if (addr['label'] != j['user'] and addr['label'] != 'default')))
 					toeach = str(','.join('%.8f' % amounteach for addr in addresses['data']['addresses'] if (addr['label'] != j['user'] and addr['label'] != 'default')))
-					print(tousers)
-					print(toeach)
+					print(id2name[j['user']]+' ('+j['user']+') made it rain on '+toreadable+' ('+tousers+') '+str(amount)+' ('+'%.8f' % amounteach+' each)');
 					block_io_ltc.withdraw_from_labels(amounts=toeach, from_labels=j['user'], to_labels=tousers)
-					print(sc.api_call("chat.postMessage", channel="#general", text=j['user']+' tipped everyone '+'%.8f' % amounteach+' ltc!  :moon:', username='pybot', icon_emoji=':robot_face:'))
+					print(sc.api_call("chat.postMessage", channel="#general", text=id2name[j['user']]+' tipped  '+toreadable+' '+'%.8f' % amounteach+' '+coin+'!  :moon:', username='pybot', icon_emoji=':robot_face:'))
 				except:
+					traceback.print_exc()
+					print('failed to make it rain ltc')
 					continue
-			if '!tipbot withdraw ' in str(j['text']) and 'ltc' in str(j['text']):
-				print(splitmessage)
-				address = splitmessage.pop()
-				print(address)
-				print(splitmessage)
-				amount = float(''.join(ele for ele in splitmessage[2] if ele.isdigit() or ele == '.'))
-				print(amount)
-				block_io_ltc.withdraw_from_labels(amounts=amount, from_labels=j['user'], to_addresses=address)
-				print(j['user']+' withdrew to'+address)
-				print(sc.api_call("chat.postMessage", channel="#general", text=j['user']+' withdrew '+str(amount)+' ltc to '+str(address)+'!  :+1:', username='pybot', icon_emoji=':robot_face:'))
-			if '!tipbot ltc addresses' in str(j['text']):
-				addresses = block_io_btc.get_my_addresses()			
-				for x in range(1,99,1):
-					try:
-						address = str(addresses['data']['addresses'][x]['address'])
-						balance = block_io_ltc.get_address_balance(addresses=address)
-						name = sc.api_call("users.info", user=addresses['data']['addresses'][x]['label'])
-						print(sc.api_call("chat.postMessage", channel="#general", text='|l'+name['user']['name']+'|-- :  '+addresses['data']['addresses'][x]['address']+':  '+balance['data']['available_balance'], username='pybot', icon_emoji=':robot_face:'))
-					except:
-						continue
-
-			############# END COIN SPECIFIC ################
-			
-			if '!tipbot register' in str(j['text']):
-				print(j['user'] + ' registered')
-				reguser = sc.api_call("users.info", user=j['user'])
-				print(reguser)
-				block_io_doge.get_new_address(label=j['user'])
-				block_io_btc.get_new_address(label=j['user'])
-				block_io_btc.get_new_address(label=j['user'])
-				print(sc.api_call("chat.postMessage", channel="#general", text="You are registered "+reguser['user']['name']+" !  :tada:", username='pybot', icon_emoji=':robot_face:'))
-			if '!tipbot check' in str(j['text']):
+			elif coin is 'btc':
 				try:
-					balance_doge = block_io_doge.get_address_balance(labels=j['user'])
-					address_doge = block_io_doge.get_address_by_label(label=j['user'])
-					print(sc.api_call("chat.postMessage", channel="#general", text='%s - %s - %s doge' % (j['user']+' dogecoin: ', address_doge['data']['address'], balance_doge['data']['available_balance']), username='pybot', icon_emoji=':robot_face:'))
-					balance_btc = block_io_btc.get_address_balance(labels=j['user'])
-					address_btc = block_io_btc.get_address_by_label(label=j['user'])
-					print(sc.api_call("chat.postMessage", channel="#general", text='%s - %s - %s btc' % (j['user']+' bitcoin: ', address_btc['data']['address'], balance_btc['data']['available_balance']), username='pybot', icon_emoji=':robot_face:'))
-					balance_ltc = block_io_ltc.get_address_balance(labels=j['user'])
-					address_ltc = block_io_ltc.get_address_by_label(label=j['user'])
-					print(sc.api_call("chat.postMessage", channel="#general", text='%s - %s - %s ltc' % (j['user']+' litecoin: ', address_ltc['data']['address'], balance_ltc['data']['available_balance']), username='pybot', icon_emoji=':robot_face:'))
+					addresses = block_io_btc.get_my_addresses()
+					amounteach = amount / (len(addresses['data']['addresses']) - 2)
+					# amount / (number of addresses - current user & default)
+					tousers = str(','.join(addr['label'] for addr in addresses['data']['addresses'] if (addr['label'] != j['user'] and addr['label'] != 'default')))
+					toreadable = str(','.join(id2name[addr['label']] for addr in addresses['data']['addresses'] if (addr['label'] != j['user'] and addr['label'] != 'default')))
+					toeach = str(','.join('%.8f' % amounteach for addr in addresses['data']['addresses'] if (addr['label'] != j['user'] and addr['label'] != 'default')))
+					print(id2name[j['user']]+' ('+j['user']+') made it rain on '+toreadable+' ('+tousers+') '+str(amount)+' ('+'%.8f' % amounteach+' each)');
+					block_io_btc.withdraw_from_labels(amounts=toeach, from_labels=j['user'], to_labels=tousers)
+					print(sc.api_call("chat.postMessage", channel="#general", text=id2name[j['user']]+' tipped  '+toreadable+' '+'%.8f' % amounteach+' '+coin+'!  :moon:', username='pybot', icon_emoji=':robot_face:'))
 				except:
-					continue			
-			if '!tipbot help' in str(j['text']):
-				print(sc.api_call("chat.postMessage", channel="#general", text='https://github.com/peoplma/slacktipbot', username='pybot', icon_emoji=':robot_face:'))
-			if 'tipbot kill all humans' in str(j['text']):
-				print(sc.api_call("chat.postMessage", channel="#general", text='http://i.imgur.com/nwLy8Rd.jpg', username='pybot', icon_emoji=':robot_face:'))				
+					traceback.print_exc()
+					print('failed to make it rain btc')
+					continue
+
+		# !tipbot withdraw
+		elif splitmessage[tipindex + 1] is 'withdraw':
+			amount = splitmessage[tipindex + 2]
+			coin = splitmessage[tipindex + 3]
+			address = splitmessage[tipindex + 4]
+
+			print(id2name[j['user']]+' ('+j['user']+') withdraws '+amount+' '+coin+' to '+address)
+
+			if coin is 'doge':
+				try:
+					block_io_doge.withdraw_from_labels(amounts=amount, from_labels=j['user'], to_addresses=address)
+					print(sc.api_call("chat.postMessage", channel="#general", text=id2name[j['user']]+' withdrew '+str(amount)+' '+coin+' to '+address+'!  :+1:', username='pybot', icon_emoji=':robot_face:'))
+				except:
+					traceback.print_exc()
+					print('failed to withdraw doge')
+					continue
+			elif coin is 'ltc':
+				try:
+					block_io_ltc.withdraw_from_labels(amounts=amount, from_labels=j['user'], to_addresses=address)
+					print(sc.api_call("chat.postMessage", channel="#general", text=id2name[j['user']]+' withdrew '+str(amount)+' '+coin+' to '+address+'!  :+1:', username='pybot', icon_emoji=':robot_face:'))
+				except:
+					traceback.print_exc()
+					print('failed to withdraw ltc')
+					continue
+			elif coin is 'btc':
+				try:
+					block_io_btc.withdraw_from_labels(amounts=amount, from_labels=j['user'], to_addresses=address)
+					print(sc.api_call("chat.postMessage", channel="#general", text=id2name[j['user']]+' withdrew '+str(amount)+' '+coin+' to '+address+'!  :+1:', username='pybot', icon_emoji=':robot_face:'))
+				except:
+					traceback.print_exc()
+					print('failed to withdraw btc')
+					continue
+
+		# !tipbot addresses
+		elif splitmessage[tipindex + 1] is 'addresses':
+			coin = splitmessage[tipindex + 2]
+
+			if coin is 'doge':
+				try:
+					addresses = block_io_doge.get_my_addresses()
+					for address in addresses['data']['addresses']:
+						balance = block_io_doge.get_address_balance(addresses=address['address'])
+						print(sc.api_call("chat.postMessage", channel="#general", text='|'+id2name[address['label']]+'|-- :  '+address['address']+': '+balance['data']['available_balance'], username='pybot', icon_emoji=':robot_face:'))
+				except:
+					print('failed to get doge addresses')
+					continue
+			elif coin is 'ltc':
+				try:
+					addresses = block_io_ltc.get_my_addresses()
+					for address in addresses['data']['addresses']:
+						balance = block_io_ltc.get_address_balance(addresses=address['address'])
+						print(sc.api_call("chat.postMessage", channel="#general", text='|'+id2name[address['label']]+'|-- :  '+address['address']+': '+balance['data']['available_balance'], username='pybot', icon_emoji=':robot_face:'))
+				except:
+					print('failed to get ltc addresses')
+					continue
+			elif coin is 'btc':
+				try:
+					addresses = block_io_btc.get_my_addresses()
+					for address in addresses['data']['addresses']:
+						balance = block_io_btc.get_address_balance(addresses=address['address'])
+						print(sc.api_call("chat.postMessage", channel="#general", text='|'+id2name[address['label']]+'|-- :  '+address['address']+': '+balance['data']['available_balance'], username='pybot', icon_emoji=':robot_face:'))
+				except:
+					print('failed to get btc addresses')
+					continue
+
+		# !tipbot register
+		elif splitmessage[tipindex + 1] is 'register':
+			try:
+				block_io_doge.get_new_address(label=j['user'])
+			except:
+				print('failed to create doge address for '+id2name[j['user']]+' ('+j['user']+')')
+			try:
+				block_io_ltc.get_new_address(label=j['user'])
+			except:
+				print('failed to create ltc address for '+id2name[j['user']]+' ('+j['user']+')')
+			try:
+				block_io_btc.get_new_address(label=j['user'])
+			except:
+				print('failed to create btc address for '+id2name[j['user']]+' ('+j['user']+')')
+
+			print(sc.api_call("chat.postMessage", channel="#general", text=id2name[j['user']].' registered!  :tada:', username='pybot', icon_emoji=':robot_face:'))
+
+		# !tipbot check
+		elif splitmessage[tipindex + 1] is 'check':
+			try:
+				balance = block_io_doge.get_address_balance(labels=j['user'])
+				address = block_io_doge.get_address_by_label(label=j['user'])
+				print(sc.api_call("chat.postMessage", channel="#general", text='%s - %s - %s doge' % (id2name[j['user']]+' dogecoin: ', address['data']['address'], balance['data']['available_balance']), username='pybot', icon_emoji=':robot_face:'))
+			except:
+				print('failed to check doge for '+id2name[j['user']]+' ('+j['user']+')')
+			try:
+				balance = block_io_ltc.get_address_balance(labels=j['user'])
+				address = block_io_ltc.get_address_by_label(label=j['user'])
+				print(sc.api_call("chat.postMessage", channel="#general", text='%s - %s - %s ltc' % (id2name[j['user']]+' litecoin: ', address['data']['address'], balance['data']['available_balance']), username='pybot', icon_emoji=':robot_face:'))
+			except:
+				print('failed to check ltc for '+id2name[j['user']]+' ('+j['user']+')')
+			try:
+				balance = block_io_btc.get_address_balance(labels=j['user'])
+				address = block_io_btc.get_address_by_label(label=j['user'])
+				print(sc.api_call("chat.postMessage", channel="#general", text='%s - %s - %s btc' % (id2name[j['user']]+' bitcoin: ', address['data']['address'], balance['data']['available_balance']), username='pybot', icon_emoji=':robot_face:'))
+			except:
+				print('failed to check btc for '+id2name[j['user']]+' ('+j['user']+')')
+
+		# !tipbot help
+		elif splitmessage[tipindex + 1] is 'help':
+			print(sc.api_call("chat.postMessage", channel="#general", text='https://github.com/peoplma/slacktipbot', username='pybot', icon_emoji=':robot_face:'))
+
+
 def secondary():
 	try:
 		while True:
