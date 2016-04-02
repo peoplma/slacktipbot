@@ -2,11 +2,11 @@
 
 # Syntax:
 
-"!tipbot register" - generates a new address for user
+"!tipbot register" - generates new btc/ltc/doge addresses for user
 
-"!tipbot check" - shows address and balance for user
+"!tipbot check" - shows addresses for all coins and balances for user
 
-"!tipbot addresses" - lists all registered users' addresses and their balances
+"!tipbot addresses coin" - lists all registered users' addresses and their balances
 
 "!tipbot tip username amount coin" - tips user indicated amount to their address.  Subamounts such as bits or satoshi are not accepted.
 
