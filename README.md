@@ -8,11 +8,11 @@
 
 "!tipbot addresses" - lists all registered users' addresses and their balances
 
-"!tipbot tip username coin amount" - tips user indicated amount to their address
+"!tipbot tip username amount coin" - tips user indicated amount to their address.  Subamounts such as bits or satoshi are not accepted.
 
-"!tipbot make it rain (coin, amount)" - tips everyone registered a share of indicated amount. Amount must be the last word in the command
+"!tipbot make it rain (coin, amount)" - tips everyone registered a share of indicated amount. Amount must be the last word in the command.  Subamounts such as bits or satoshi are not accepted.
 
-"!tipbot withdraw amount coin address" - withdraws indicated amount to indicated address.  Address must be the last word listed in command
+"!tipbot withdraw amount coin address" - withdraws indicated amount to indicated address.  Address must be the last word listed in command. Subamounts such as bits or satoshi are not accepted.
 
 "!tipbot help" - links to this readme
 
