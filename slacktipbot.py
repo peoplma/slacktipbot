@@ -6,7 +6,7 @@ from slacksocket import SlackSocket
 from slackclient import SlackClient
 from block_io import BlockIo
 version = 2 # API version
-from blockio_key_pin1 import *
+from key_pin import *
 block_io_doge = BlockIo(blockio_api_doge_key, blockio_secret_pin, version) 
 block_io_btc = BlockIo(blockio_api_btc_key, blockio_secret_pin, version)
 block_io_ltc = BlockIo(blockio_api_ltc_key, blockio_secret_pin, version)
@@ -46,12 +46,12 @@ def main():
 		print(splitmessage)
 		tipindex = 0
 		for i in range(0, len(splitmessage), 1):
-			if splitmessage[i] is '!tipbot':
+			if splitmessage[i] == '!tipbot':
 				tipindex = i
 				break
 
 		# !tipbot tip
-		if splitmessage[tipindex + 1] is 'tip':
+		if splitmessage[tipindex + 1] == 'tip':
 			if not isfloat(splitmessage[tipindex + 2]):
 				print('amount not float ='+splitmessage[tipindex + 2])
 				continue
@@ -75,7 +75,7 @@ def main():
 
 			print(id2name[j['user']]+' ('+j['user']+') tipped '+str(amount)+' '+coin+' to '+toreadable+' ('+tousers+')')
 
-			if coin is 'doge':
+			if coin == 'doge':
 				try:
 					block_io_doge.withdraw_from_labels(amounts=toeach, from_labels=j['user'], to_labels=tousers)
 					print(sc.api_call("chat.postMessage", channel="#general", text=id2name[j['user']]+' tipped '+toreadable+' '+str(amount)+' '+coin+'!  :moon:', username='pybot', icon_emoji=':robot_face:'))
@@ -83,7 +83,7 @@ def main():
 					traceback.print_exc()
 					print('failed to tip doge')
 					continue
-			elif coin is 'ltc':
+			elif coin == 'ltc':
 				try:
 					block_io_ltc.withdraw_from_labels(amounts=toeach, from_labels=j['user'], to_labels=tousers)
 					print(sc.api_call("chat.postMessage", channel="#general", text=id2name[j['user']]+' tipped '+toreadable+' '+str(amount)+' '+coin+'!  :moon:', username='pybot', icon_emoji=':robot_face:'))
@@ -91,7 +91,7 @@ def main():
 					traceback.print_exc()
 					print('failed to tip ltc')
 					continue
-			elif coin is 'btc':
+			elif coin == 'btc':
 				try:
 					block_io_btc.withdraw_from_labels(amounts=toeach, from_labels=j['user'], to_labels=tousers)
 					print(sc.api_call("chat.postMessage", channel="#general", text=id2name[j['user']]+' tipped '+toreadable+' '+str(amount)+' '+coin+'!  :moon:', username='pybot', icon_emoji=':robot_face:'))
@@ -101,8 +101,8 @@ def main():
 					continue
 
 		# !tipbot make it rain
-		elif splitmessage[tipindex + 1] is 'make':
-			if splitmessage[tipindex + 2] is not 'it' or splitmessage[tipindex + 3] is not 'rain':
+		elif splitmessage[tipindex + 1] == 'make':
+			if splitmessage[tipindex + 2] != 'it' or splitmessage[tipindex + 3] != 'rain':
 				continue
 
 			if not isfloat(splitmessage[tipindex + 4]):
@@ -115,7 +115,7 @@ def main():
 
 			coin = splitmessage[tipindex + 5]
 
-			if coin is 'doge':
+			if coin == 'doge':
 				try:
 					addresses = block_io_doge.get_my_addresses()
 					amounteach = amount / (len(addresses['data']['addresses']) - 2)
@@ -130,7 +130,7 @@ def main():
 					traceback.print_exc()
 					print('failed to make it rain doge')
 					continue
-			elif coin is 'ltc':
+			elif coin == 'ltc':
 				try:
 					addresses = block_io_ltc.get_my_addresses()
 					amounteach = amount / (len(addresses['data']['addresses']) - 2)
@@ -145,7 +145,7 @@ def main():
 					traceback.print_exc()
 					print('failed to make it rain ltc')
 					continue
-			elif coin is 'btc':
+			elif coin == 'btc':
 				try:
 					addresses = block_io_btc.get_my_addresses()
 					amounteach = amount / (len(addresses['data']['addresses']) - 2)
@@ -162,14 +162,14 @@ def main():
 					continue
 
 		# !tipbot withdraw
-		elif splitmessage[tipindex + 1] is 'withdraw':
+		elif splitmessage[tipindex + 1] == 'withdraw':
 			amount = splitmessage[tipindex + 2]
 			coin = splitmessage[tipindex + 3]
 			address = splitmessage[tipindex + 4]
 
 			print(id2name[j['user']]+' ('+j['user']+') withdraws '+amount+' '+coin+' to '+address)
 
-			if coin is 'doge':
+			if coin == 'doge':
 				try:
 					block_io_doge.withdraw_from_labels(amounts=amount, from_labels=j['user'], to_addresses=address)
 					print(sc.api_call("chat.postMessage", channel="#general", text=id2name[j['user']]+' withdrew '+str(amount)+' '+coin+' to '+address+'!  :+1:', username='pybot', icon_emoji=':robot_face:'))
@@ -177,7 +177,7 @@ def main():
 					traceback.print_exc()
 					print('failed to withdraw doge')
 					continue
-			elif coin is 'ltc':
+			elif coin == 'ltc':
 				try:
 					block_io_ltc.withdraw_from_labels(amounts=amount, from_labels=j['user'], to_addresses=address)
 					print(sc.api_call("chat.postMessage", channel="#general", text=id2name[j['user']]+' withdrew '+str(amount)+' '+coin+' to '+address+'!  :+1:', username='pybot', icon_emoji=':robot_face:'))
@@ -185,7 +185,7 @@ def main():
 					traceback.print_exc()
 					print('failed to withdraw ltc')
 					continue
-			elif coin is 'btc':
+			elif coin == 'btc':
 				try:
 					block_io_btc.withdraw_from_labels(amounts=amount, from_labels=j['user'], to_addresses=address)
 					print(sc.api_call("chat.postMessage", channel="#general", text=id2name[j['user']]+' withdrew '+str(amount)+' '+coin+' to '+address+'!  :+1:', username='pybot', icon_emoji=':robot_face:'))
@@ -195,10 +195,10 @@ def main():
 					continue
 
 		# !tipbot addresses
-		elif splitmessage[tipindex + 1] is 'addresses':
+		elif splitmessage[tipindex + 1] == 'addresses':
 			coin = splitmessage[tipindex + 2]
 
-			if coin is 'doge':
+			if coin == 'doge':
 				try:
 					addresses = block_io_doge.get_my_addresses()
 					for address in addresses['data']['addresses']:
@@ -207,7 +207,7 @@ def main():
 				except:
 					print('failed to get doge addresses')
 					continue
-			elif coin is 'ltc':
+			elif coin == 'ltc':
 				try:
 					addresses = block_io_ltc.get_my_addresses()
 					for address in addresses['data']['addresses']:
@@ -216,7 +216,7 @@ def main():
 				except:
 					print('failed to get ltc addresses')
 					continue
-			elif coin is 'btc':
+			elif coin == 'btc':
 				try:
 					addresses = block_io_btc.get_my_addresses()
 					for address in addresses['data']['addresses']:
@@ -227,7 +227,7 @@ def main():
 					continue
 
 		# !tipbot register
-		elif splitmessage[tipindex + 1] is 'register':
+		elif splitmessage[tipindex + 1] == 'register':
 			try:
 				block_io_doge.get_new_address(label=j['user'])
 			except:
@@ -241,10 +241,10 @@ def main():
 			except:
 				print('failed to create btc address for '+id2name[j['user']]+' ('+j['user']+')')
 
-			print(sc.api_call("chat.postMessage", channel="#general", text=id2name[j['user']].' registered!  :tada:', username='pybot', icon_emoji=':robot_face:'))
+			print(sc.api_call("chat.postMessage", channel="#general", text=id2name[j['user']]+' registered!  :tada:', username='pybot', icon_emoji=':robot_face:'))
 
 		# !tipbot check
-		elif splitmessage[tipindex + 1] is 'check':
+		elif splitmessage[tipindex + 1] == 'check':
 			try:
 				balance = block_io_doge.get_address_balance(labels=j['user'])
 				address = block_io_doge.get_address_by_label(label=j['user'])
@@ -265,7 +265,7 @@ def main():
 				print('failed to check btc for '+id2name[j['user']]+' ('+j['user']+')')
 
 		# !tipbot help
-		elif splitmessage[tipindex + 1] is 'help':
+		elif splitmessage[tipindex + 1] == 'help':
 			print(sc.api_call("chat.postMessage", channel="#general", text='https://github.com/peoplma/slacktipbot', username='pybot', icon_emoji=':robot_face:'))
 
 
