@@ -51,8 +51,15 @@ def main():
 				tipindex = i
 				break
 
+		try:
+			command = splitmessage[tipindex + 1]
+		except:
+			continue
+
 		# !tipbot tip
-		if splitmessage[tipindex + 1] == 'tip':
+		if command == 'tip':
+			if len(splitmessage) < (tipindex + 4):
+				continue
 			coin = splitmessage[tipindex + 3]
 			if coin not in min_amount.keys():
 				print('unknown coin ='+coin)
@@ -68,7 +75,7 @@ def main():
 
 			# get list of valid users from command
 			users = []
-			for i in range(4, len(splitmessage), 1):
+			for i in range(tipindex + 4, len(splitmessage), 1):
 				if splitmessage[i] in name2id.keys():
 					users.append(splitmessage[i]);
 
@@ -105,7 +112,9 @@ def main():
 					continue
 
 		# !tipbot make it rain
-		elif splitmessage[tipindex + 1] == 'make':
+		elif command == 'make':
+			if len(splitmessage) < (tipindex + 5):
+				continue
 			if splitmessage[tipindex + 2] != 'it' or splitmessage[tipindex + 3] != 'rain':
 				continue
 
@@ -170,7 +179,10 @@ def main():
 					continue
 
 		# !tipbot withdraw
-		elif splitmessage[tipindex + 1] == 'withdraw':
+		elif command == 'withdraw':
+			if len(splitmessage) < (tipindex + 4):
+				continue
+
 			amount = splitmessage[tipindex + 2]
 			coin = splitmessage[tipindex + 3]
 			address = splitmessage[tipindex + 4]
@@ -207,7 +219,10 @@ def main():
 					continue
 
 		# !tipbot addresses
-		elif splitmessage[tipindex + 1] == 'addresses':
+		elif command == 'addresses':
+			if len(splitmessage) < (tipindex + 2):
+				continue
+
 			coin = splitmessage[tipindex + 2]
 			if coin not in min_amount.keys():
 				print('unknown coin ='+coin)
@@ -243,7 +258,7 @@ def main():
 					continue
 
 		# !tipbot register
-		elif splitmessage[tipindex + 1] == 'register':
+		elif command == 'register':
 			try:
 				block_io_doge.get_new_address(label=j['user'])
 			except:
@@ -260,7 +275,7 @@ def main():
 			print(sc.api_call("chat.postMessage", channel="#general", text=id2name[j['user']]+' registered!  :tada:', username='pybot', icon_emoji=':robot_face:'))
 
 		# !tipbot check
-		elif splitmessage[tipindex + 1] == 'check':
+		elif command == 'check':
 			try:
 				balance = block_io_doge.get_address_balance(labels=j['user'])
 				address = block_io_doge.get_address_by_label(label=j['user'])
@@ -281,7 +296,7 @@ def main():
 				print('failed to check btc for '+id2name[j['user']]+' ('+j['user']+')')
 
 		# !tipbot help
-		elif splitmessage[tipindex + 1] == 'help':
+		elif command == 'help':
 			print(sc.api_call("chat.postMessage", channel="#general", text='https://github.com/peoplma/slacktipbot', username='pybot', icon_emoji=':robot_face:'))
 
 
