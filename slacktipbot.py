@@ -12,6 +12,7 @@ block_io_btc = BlockIo(blockio_api_btc_key, blockio_secret_pin, version)
 block_io_ltc = BlockIo(blockio_api_ltc_key, blockio_secret_pin, version)
 ss = SlackSocket(slack_token,translate=False) # translate will lookup and replace user and channel IDs with their human-readable names. default true. 
 sc = SlackClient(slack_token)
+min_amount = {'doge': 2.0, 'ltc': 0.002, 'btc': 0.00002}
 
 def main():
 	time.sleep(1)
@@ -52,15 +53,18 @@ def main():
 
 		# !tipbot tip
 		if splitmessage[tipindex + 1] == 'tip':
-			if not isfloat(splitmessage[tipindex + 2]):
+			coin = splitmessage[tipindex + 3]
+			if coin not in min_amount.keys():
+				print('unknown coin ='+coin)
+				continue
+			try:
+				amount = float(splitmessage[tipindex + 2])
+			except:
 				print('amount not float ='+splitmessage[tipindex + 2])
 				continue
-			amount = float(splitmessage[tipindex + 2])
-			if amount < 0:
-				print('negative amount ='+splitmessage[tipindex + 2])
+			if amount < min_amount[coin]:
+				print('amount too low ='+splitmessage[tipindex + 2])
 				continue
-
-			coin = splitmessage[tipindex + 3]
 
 			# get list of valid users from command
 			users = []
@@ -105,15 +109,19 @@ def main():
 			if splitmessage[tipindex + 2] != 'it' or splitmessage[tipindex + 3] != 'rain':
 				continue
 
-			if not isfloat(splitmessage[tipindex + 4]):
-				print('amount not float ='+splitmessage[tipindex + 4])
-				continue
-			amount = float(splitmessage[tipindex + 4])
-			if amount < 0:
-				print('negative tip ='+splitmessage[tipindex + 4])
+			coin = splitmessage[tipindex + 5]
+			if coin not in min_amount.keys():
+				print('unknown coin ='+coin)
 				continue
 
-			coin = splitmessage[tipindex + 5]
+			try:
+				amount = float(splitmessage[tipindex + 4])
+			except:
+				print('amount not float ='+splitmessage[tipindex + 4])
+				continue
+			if amount < min_amount[coin]:
+				print('amount too low ='+splitmessage[tipindex + 4])
+				continue
 
 			if coin == 'doge':
 				try:
@@ -167,6 +175,10 @@ def main():
 			coin = splitmessage[tipindex + 3]
 			address = splitmessage[tipindex + 4]
 
+			if coin not in min_amount.keys():
+				print('unknown coin ='+coin)
+				continue
+
 			print(id2name[j['user']]+' ('+j['user']+') withdraws '+amount+' '+coin+' to '+address)
 
 			if coin == 'doge':
@@ -197,6 +209,10 @@ def main():
 		# !tipbot addresses
 		elif splitmessage[tipindex + 1] == 'addresses':
 			coin = splitmessage[tipindex + 2]
+			if coin not in min_amount.keys():
+				print('unknown coin ='+coin)
+				continue
+
 
 			if coin == 'doge':
 				try:
