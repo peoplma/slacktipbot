@@ -236,6 +236,7 @@ def main():
 						balance = block_io_doge.get_address_balance(addresses=address['address'])
 						print(sc.api_call("chat.postMessage", channel="#general", text='|'+id2name[address['label']]+'|-- :  '+address['address']+': '+balance['data']['available_balance'], username='pybot', icon_emoji=':robot_face:'))
 				except:
+					traceback.print_exc()
 					print('failed to get doge addresses')
 					continue
 			elif coin == 'ltc':
@@ -245,6 +246,7 @@ def main():
 						balance = block_io_ltc.get_address_balance(addresses=address['address'])
 						print(sc.api_call("chat.postMessage", channel="#general", text='|'+id2name[address['label']]+'|-- :  '+address['address']+': '+balance['data']['available_balance'], username='pybot', icon_emoji=':robot_face:'))
 				except:
+					traceback.print_exc()
 					print('failed to get ltc addresses')
 					continue
 			elif coin == 'btc':
@@ -254,6 +256,7 @@ def main():
 						balance = block_io_btc.get_address_balance(addresses=address['address'])
 						print(sc.api_call("chat.postMessage", channel="#general", text='|'+id2name[address['label']]+'|-- :  '+address['address']+': '+balance['data']['available_balance'], username='pybot', icon_emoji=':robot_face:'))
 				except:
+					traceback.print_exc()
 					print('failed to get btc addresses')
 					continue
 
