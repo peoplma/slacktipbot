@@ -2,17 +2,19 @@
 
 # Syntax:
 
-"!tipbot register" - generates new btc/ltc/doge addresses for user
+"!tipbot register" - generates new btc/ltc/doge addresses for user.
 
-"!tipbot check" - shows addresses for all coins and balances for user
+"!tipbot check" - shows addresses for all coins and balances for user.
 
-"!tipbot addresses coin" - lists all registered users' addresses and their balances
+"!tipbot addresses coin" - lists all registered users' addresses and their balances.  coin can be btc, ltc, or doge
 
-"!tipbot tip username amount coin" - tips user indicated amount to their address.  Subamounts such as bits or satoshi are not accepted.
+"!tipbot tip username amount coin" - tips user indicated amount to their address.  Subamounts such as bits or satoshi are not accepted.  coin can be btc, ltc, or doge
 
-"!tipbot make it rain (coin, amount)" - tips everyone registered a share of indicated amount. Amount must be the last word in the command.  Subamounts such as bits or satoshi are not accepted.
+"!tipbot make it rain coin amount" - tips everyone registered a share of indicated amount. Amount must be the last word in the command.  Subamounts such as bits or satoshi are not accepted.  coin can be btc, ltc, or doge
 
-"!tipbot withdraw amount coin address" - withdraws indicated amount to indicated address.  Address must be the last word listed in command. Subamounts such as bits or satoshi are not accepted.
+"!tipbot withdraw amount coin address" - withdraws indicated amount to indicated address.  Address must be the last word listed in command. Subamounts such as bits or satoshi are not accepted.  coin can be btc, ltc, or doge
+
+"!tipbot shift amount coin1_coin2" - uses shapeshift to exchange coin1 to coin2.  coin can be btc, ltc, or doge
 
 "!tipbot help" - links to this readme
 
