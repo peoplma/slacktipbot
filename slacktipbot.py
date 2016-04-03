@@ -7,7 +7,7 @@ from slacksocket import SlackSocket
 from slackclient import SlackClient
 from block_io import BlockIo
 version = 2 # API version
-from blockio_key_pin1 import *
+from key_pin import *
 block_io_doge = BlockIo(blockio_api_doge_key, blockio_secret_pin, version) 
 block_io_btc = BlockIo(blockio_api_btc_key, blockio_secret_pin, version)
 block_io_ltc = BlockIo(blockio_api_ltc_key, blockio_secret_pin, version)
