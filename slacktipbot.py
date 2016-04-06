@@ -82,7 +82,7 @@ def main():
 			users = []
 			accounts = block_io_doge.get_my_addresses()
 			reg_users = []
-			for g in range(0,99,1):
+			for g in range(0,len(accounts['data']['addresses']),1):
 				try:
 					reg_users.append(accounts['data']['addresses'][g]['label'])
 				except:
