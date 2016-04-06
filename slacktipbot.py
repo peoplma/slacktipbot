@@ -7,7 +7,7 @@ from slacksocket import SlackSocket
 from slackclient import SlackClient
 from block_io import BlockIo
 version = 2 # API version
-from key_pin import *
+from blockio_key_pin1 import *
 block_io_doge = BlockIo(blockio_api_doge_key, blockio_secret_pin, version) 
 block_io_btc = BlockIo(blockio_api_btc_key, blockio_secret_pin, version)
 block_io_ltc = BlockIo(blockio_api_ltc_key, blockio_secret_pin, version)
@@ -104,11 +104,11 @@ def main():
 				try:			
 					balance_doge = block_io_doge.get_address_balance(labels=j['user'])
 					print(balance_doge['data']['available_balance'])
-					fee = block_io_doge.get_network_fee_estimate(amounts=balance_doge['data']['available_balance'], to_labels=tousers)
+					fee = block_io_doge.get_network_fee_estimate(amounts=balance_doge['data']['available_balance'], to_labels=tousers, priority='low')
 					print(fee)
 					balance_minus_fee = float(balance_doge['data']['available_balance']) - float(fee['data']['estimated_network_fee'])
 					print(balance_minus_fee)
-					block_io_doge.withdraw_from_labels(amounts=balance_minus_fee, from_labels=j['user'], to_labels=tousers)
+					block_io_doge.withdraw_from_labels(amounts=balance_minus_fee, from_labels=j['user'], to_labels=tousers, priority='low')
 					print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' tipped '+str(balance_minus_fee)+' ' +coin+' to '+toreadable+'!  :+1:', username='pybot', icon_emoji=':robot_face:'))
 				except:
 					try:
@@ -116,7 +116,7 @@ def main():
 						splitexc = exc.split()
 						n = len(splitexc)-2
 						print(splitexc[n])					
-						block_io_doge.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_labels=tousers)
+						block_io_doge.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_labels=tousers, priority='low')
 						print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' tipped '+str(splitexc[n])+' ' +coin+' to '+toreadable+'!  :+1:', username='pybot', icon_emoji=':robot_face:'))
 					except:
 						traceback.print_exc()
@@ -124,7 +124,7 @@ def main():
 						continue
 			elif coin == 'doge':
 				try:
-					block_io_doge.withdraw_from_labels(amounts=toeach, from_labels=j['user'], to_labels=tousers)
+					block_io_doge.withdraw_from_labels(amounts=toeach, from_labels=j['user'], to_labels=tousers, priority='low')
 					print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' tipped '+toreadable+' '+str(amount)+' '+coin+'!  :moon:', username='pybot', icon_emoji=':robot_face:'))
 				except:
 					try:
@@ -132,7 +132,7 @@ def main():
 						splitexc = exc.split()
 						n = len(splitexc)-2
 						print(splitexc[n])					
-						block_io_doge.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_labels=tousers)
+						block_io_doge.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_labels=tousers, priority='low')
 						print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' tipped '+str(splitexc[n])+' ' +coin+' to '+toreadable+'!  :+1:', username='pybot', icon_emoji=':robot_face:'))
 					except:
 						traceback.print_exc()
@@ -142,11 +142,11 @@ def main():
 				try:			
 					balance_ltc = block_io_ltc.get_address_balance(labels=j['user'])
 					print(balance_ltc['data']['available_balance'])
-					fee = block_io_ltc.get_network_fee_estimate(amounts=balance_ltc['data']['available_balance'], to_labels=tousers)
+					fee = block_io_ltc.get_network_fee_estimate(amounts=balance_ltc['data']['available_balance'], to_labels=tousers, priority='low')
 					print(fee)
 					balance_minus_fee = float(balance_ltc['data']['available_balance']) - float(fee['data']['estimated_network_fee'])
 					print(balance_minus_fee)
-					block_io_ltc.withdraw_from_labels(amounts=balance_minus_fee, from_labels=j['user'], to_labels=tousers)
+					block_io_ltc.withdraw_from_labels(amounts=balance_minus_fee, from_labels=j['user'], to_labels=tousers, priority='low')
 					print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' tipped '+str(splitexc[n])+' ' +coin+' to '+toreadable+'!  :+1:', username='pybot', icon_emoji=':robot_face:'))
 				except:
 					try:
@@ -154,7 +154,7 @@ def main():
 						splitexc = exc.split()
 						n = len(splitexc)-2
 						print(splitexc[n])					
-						block_io_ltc.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_labels=tousers)
+						block_io_ltc.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_labels=tousers, priority='low')
 						print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' tipped '+str(splitexc[n])+' ' +coin+' to '+toreadable+'!  :+1:', username='pybot', icon_emoji=':robot_face:'))
 					except:
 						traceback.print_exc()
@@ -162,7 +162,7 @@ def main():
 						continue
 			elif coin == 'ltc':
 				try:
-					block_io_ltc.withdraw_from_labels(amounts=toeach, from_labels=j['user'], to_labels=tousers)
+					block_io_ltc.withdraw_from_labels(amounts=toeach, from_labels=j['user'], to_labels=tousers, priority='low')
 					print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' tipped '+toreadable+' '+str(amount)+' '+coin+'!  :moon:', username='pybot', icon_emoji=':robot_face:'))
 				except:
 					try:
@@ -170,7 +170,7 @@ def main():
 						splitexc = exc.split()
 						n = len(splitexc)-2
 						print(splitexc[n])					
-						block_io_ltc.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_labels=tousers)
+						block_io_ltc.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_labels=tousers, priority='low')
 						print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' tipped '+str(splitexc[n])+' ' +coin+' to '+toreadable+'!  :+1:', username='pybot', icon_emoji=':robot_face:'))
 					except:
 						traceback.print_exc()
@@ -180,11 +180,11 @@ def main():
 				try:			
 					balance_btc = block_io_btc.get_address_balance(labels=j['user'])
 					print(balance_btc['data']['available_balance'])
-					fee = block_io_btc.get_network_fee_estimate(amounts=balance_btc['data']['available_balance'], to_labels=tousers)
+					fee = block_io_btc.get_network_fee_estimate(amounts=balance_btc['data']['available_balance'], to_labels=tousers, priority='low')
 					print(fee)
 					balance_minus_fee = float(balance_btc['data']['available_balance']) - float(fee['data']['estimated_network_fee'])
 					print(balance_minus_fee)
-					block_io_btc.withdraw_from_labels(amounts=balance_minus_fee, from_labels=j['user'], to_labels=tousers)
+					block_io_btc.withdraw_from_labels(amounts=balance_minus_fee, from_labels=j['user'], to_labels=tousers, priority='low')
 					print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' tipped all ' +coin+' to '+toreadable+'!  :+1:', username='pybot', icon_emoji=':robot_face:'))
 				except:
 					try:
@@ -192,7 +192,7 @@ def main():
 						splitexc = exc.split()
 						n = len(splitexc)-2
 						print(splitexc[n])					
-						block_io_btc.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_labels=tousers)
+						block_io_btc.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_labels=tousers, priority='low')
 						print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' tipped '+str(splitexc[n])+' ' +coin+' to '+toreadable+'!  :+1:', username='pybot', icon_emoji=':robot_face:'))
 					except:
 						traceback.print_exc()
@@ -200,7 +200,7 @@ def main():
 						continue		
 			elif coin == 'btc':
 				try:
-					block_io_btc.withdraw_from_labels(amounts=toeach, from_labels=j['user'], to_labels=tousers)
+					block_io_btc.withdraw_from_labels(amounts=toeach, from_labels=j['user'], to_labels=tousers, priority='low')
 					print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' tipped '+toreadable+' '+str(amount)+' '+coin+'!  :moon:', username='pybot', icon_emoji=':robot_face:'))
 				except:
 					try:
@@ -208,7 +208,7 @@ def main():
 						splitexc = exc.split()
 						n = len(splitexc)-2
 						print(splitexc[n])					
-						block_io_btc.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_labels=tousers)
+						block_io_btc.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_labels=tousers, priority='low')
 						print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' tipped '+str(splitexc[n])+' ' +coin+' to '+toreadable+'!  :+1:', username='pybot', icon_emoji=':robot_face:'))
 					except:
 						traceback.print_exc()
@@ -252,7 +252,7 @@ def main():
 					toreadable = str(','.join(id2name[user] for user in users))
 					toeach = str(','.join('%.8f'%amounteach for user in users))
 					print(id2name[j['user']]+' ('+j['user']+') made it rain on '+toreadable+' ('+tousers+') '+str(amount)+' ('+'%.8f' % amounteach+' each)');
-					block_io_doge.withdraw_from_labels(amounts=toeach, from_labels=j['user'], to_labels=tousers)
+					block_io_doge.withdraw_from_labels(amounts=toeach, from_labels=j['user'], to_labels=tousers, priority='low')
 					print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' tipped  '+toreadable+' '+'%.8f' % amounteach+' '+coin+'!  :moon:', username='pybot', icon_emoji=':robot_face:'))
 				except:
 					traceback.print_exc()
@@ -275,7 +275,7 @@ def main():
 					toreadable = str(','.join(id2name[user] for user in users))
 					toeach = str(','.join('%.8f'%amounteach for user in users))
 					print(id2name[j['user']]+' ('+j['user']+') made it rain on '+toreadable+' ('+tousers+') '+str(amount)+' ('+'%.8f' % amounteach+' each)');
-					block_io_ltc.withdraw_from_labels(amounts=toeach, from_labels=j['user'], to_labels=tousers)
+					block_io_ltc.withdraw_from_labels(amounts=toeach, from_labels=j['user'], to_labels=tousers, priority='low')
 					print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' tipped  '+toreadable+' '+'%.8f' % amounteach+' '+coin+'!  :moon:', username='pybot', icon_emoji=':robot_face:'))
 				except:
 					traceback.print_exc()
@@ -298,7 +298,7 @@ def main():
 					toreadable = str(','.join(id2name[user] for user in users))
 					toeach = str(','.join('%.8f'%amounteach for user in users))
 					print(id2name[j['user']]+' ('+j['user']+') made it rain on '+toreadable+' ('+tousers+') '+str(amount)+' ('+'%.8f' % amounteach+' each)');
-					block_io_btc.withdraw_from_labels(amounts=toeach, from_labels=j['user'], to_labels=tousers)
+					block_io_btc.withdraw_from_labels(amounts=toeach, from_labels=j['user'], to_labels=tousers, priority='low')
 					print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' tipped  '+toreadable+' '+'%.8f' % amounteach+' '+coin+'!  :moon:', username='pybot', icon_emoji=':robot_face:'))
 				except:
 					traceback.print_exc()
@@ -324,11 +324,11 @@ def main():
 				try:			
 					balance_doge = block_io_doge.get_address_balance(labels=j['user'])
 					print(balance_doge['data']['available_balance'])
-					fee = block_io_doge.get_network_fee_estimate(amounts=balance_doge['data']['available_balance'], to_addresses=address)
+					fee = block_io_doge.get_network_fee_estimate(amounts=balance_doge['data']['available_balance'], to_addresses=address, priority='low')
 					print(fee)
 					balance_minus_fee = float(balance_doge['data']['available_balance']) - float(fee['data']['estimated_network_fee'])
 					print(balance_minus_fee)
-					block_io_doge.withdraw_from_labels(amounts=balance_minus_fee, from_labels=j['user'], to_addresses=address)
+					block_io_doge.withdraw_from_labels(amounts=balance_minus_fee, from_labels=j['user'], to_addresses=address, priority='low')
 					print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' withdrew '+str(amount)+' '+coin+' to '+address+'!  :+1:', username='pybot', icon_emoji=':robot_face:'))
 				except:
 					try:
@@ -336,7 +336,7 @@ def main():
 						splitexc = exc.split()
 						n = len(splitexc)-2
 						print(splitexc[n])					
-						block_io_doge.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_addresses=address)
+						block_io_doge.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_addresses=address, priority='low')
 						print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' withdrew '+str(amount)+' '+coin+' to '+address+'!  :+1:', username='pybot', icon_emoji=':robot_face:'))
 					except:
 						traceback.print_exc()
@@ -344,7 +344,7 @@ def main():
 						continue
 			elif coin == 'doge':
 				try:
-					block_io_doge.withdraw_from_labels(amounts=amount, from_labels=j['user'], to_addresses=address)
+					block_io_doge.withdraw_from_labels(amounts=amount, from_labels=j['user'], to_addresses=address, priority='low')
 					print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' withdrew '+str(amount)+' '+coin+' to '+address+'!  :+1:', username='pybot', icon_emoji=':robot_face:'))
 				except:
 					try:
@@ -352,7 +352,7 @@ def main():
 						splitexc = exc.split()
 						n = len(splitexc)-2
 						print(splitexc[n])					
-						block_io_doge.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_addresses=address)
+						block_io_doge.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_addresses=address, priority='low')
 						print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' withdrew '+str(splitexc[n])+' '+coin+' to '+address+'!  :+1:', username='pybot', icon_emoji=':robot_face:'))
 					except:
 						traceback.print_exc()
@@ -362,11 +362,11 @@ def main():
 				try:		
 					balance_ltc = block_io_ltc.get_address_balance(labels=j['user'])
 					print(balance_ltc['data']['available_balance'])
-					fee = block_io_ltc.get_network_fee_estimate(amounts=balance_ltc['data']['available_balance'], to_addresses=address)
+					fee = block_io_ltc.get_network_fee_estimate(amounts=balance_ltc['data']['available_balance'], to_addresses=address, priority='low')
 					print(fee)
 					balance_minus_fee = float(balance_ltc['data']['available_balance']) - float(fee['data']['estimated_network_fee'])
 					print(balance_minus_fee)
-					block_io_ltc.withdraw_from_labels(amounts=balance_minus_fee, from_labels=j['user'], to_addresses=address)
+					block_io_ltc.withdraw_from_labels(amounts=balance_minus_fee, from_labels=j['user'], to_addresses=address, priority='low')
 					print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' withdrew '+str(amount)+' '+coin+' to '+address+'!  :+1:', username='pybot', icon_emoji=':robot_face:'))
 				except:				
 					try:
@@ -374,7 +374,7 @@ def main():
 						splitexc = exc.split()
 						n = len(splitexc)-2
 						print(splitexc[n])					
-						block_io_ltc.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_addresses=address)
+						block_io_ltc.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_addresses=address, priority='low')
 						print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' withdrew '+str(amount)+' '+coin+' to '+address+'!  :+1:', username='pybot', icon_emoji=':robot_face:'))
 					except:
 						traceback.print_exc()
@@ -382,7 +382,7 @@ def main():
 						continue
 			elif coin == 'ltc':
 				try:
-					block_io_ltc.withdraw_from_labels(amounts=amount, from_labels=j['user'], to_addresses=address)
+					block_io_ltc.withdraw_from_labels(amounts=amount, from_labels=j['user'], to_addresses=address, priority='low')
 					print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' withdrew '+str(amount)+' '+coin+' to '+address+'!  :+1:', username='pybot', icon_emoji=':robot_face:'))
 				except:
 					try:
@@ -390,7 +390,7 @@ def main():
 						splitexc = exc.split()
 						n = len(splitexc)-2
 						print(splitexc[n])					
-						block_io_ltc.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_addresses=address)
+						block_io_ltc.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_addresses=address, priority='low')
 						print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' withdrew '+str(splitexc[n])+' '+coin+' to '+address+'!  :+1:', username='pybot', icon_emoji=':robot_face:'))
 					except:
 						traceback.print_exc()
@@ -400,11 +400,11 @@ def main():
 				try:			
 					balance_btc = block_io_btc.get_address_balance(labels=j['user'])
 					print(balance_btc['data']['available_balance'])
-					fee = block_io_btc.get_network_fee_estimate(amounts=balance_btc['data']['available_balance'], to_addresses=address)
+					fee = block_io_btc.get_network_fee_estimate(amounts=balance_btc['data']['available_balance'], to_addresses=address, priority='low')
 					print(fee)
 					balance_minus_fee = float(balance_btc['data']['available_balance']) - float(fee['data']['estimated_network_fee'])
 					print(balance_minus_fee)
-					block_io_btc.withdraw_from_labels(amounts=balance_minus_fee, from_labels=j['user'], to_addresses=address)
+					block_io_btc.withdraw_from_labels(amounts=balance_minus_fee, from_labels=j['user'], to_addresses=address, priority='low')
 					print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' withdrew '+str(amount)+' '+coin+' to '+address+'!  :+1:', username='pybot', icon_emoji=':robot_face:'))
 				except:
 					try:
@@ -412,7 +412,7 @@ def main():
 						splitexc = exc.split()
 						n = len(splitexc)-2
 						print(splitexc[n])					
-						block_io_btc.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_addresses=address)
+						block_io_btc.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_addresses=address, priority='low')
 						print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' withdrew '+str(amount)+' '+coin+' to '+address+'!  :+1:', username='pybot', icon_emoji=':robot_face:'))
 					except:
 						traceback.print_exc()
@@ -420,7 +420,7 @@ def main():
 						continue
 			elif coin == 'btc':	
 				try:
-					block_io_btc.withdraw_from_labels(amounts=amount, from_labels=j['user'], to_addresses=address)
+					block_io_btc.withdraw_from_labels(amounts=amount, from_labels=j['user'], to_addresses=address, priority='low')
 					print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' withdrew '+str(amount)+' '+coin+' to '+address+'!  :+1:', username='pybot', icon_emoji=':robot_face:'))
 				except:
 					try:
@@ -428,7 +428,7 @@ def main():
 						splitexc = exc.split()
 						n = len(splitexc)-2
 						print(splitexc[n])					
-						block_io_ltc.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_addresses=address)
+						block_io_ltc.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_addresses=address, priority='low')
 						print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' withdrew '+str(splitexc[n])+' '+coin+' to '+address+'!  :+1:', username='pybot', icon_emoji=':robot_face:'))
 					except:
 						traceback.print_exc()
@@ -466,7 +466,7 @@ def main():
 						continue
 					amount = float(''.join(ele for ele in splitmessage[2] if ele.isdigit() or ele == '.'))
 					print(amount)
-					block_io_btc.withdraw_from_labels(amounts=amount, from_labels=j['user'], to_addresses=jresponse['deposit'])
+					block_io_btc.withdraw_from_labels(amounts=amount, from_labels=j['user'], to_addresses=jresponse['deposit'], priority='low')
 					print(sc.api_call("chat.postMessage", channel=j['channel'], text=j['user']+' shifted '+str(amount)+' btc to ltc!  :unicorn_face:', username='pybot', icon_emoji=':robot_face:'))
 				except:
 					try:
@@ -474,7 +474,7 @@ def main():
 						splitexc = exc.split()
 						n = len(splitexc)-2
 						print(splitexc[n])					
-						block_io_btc.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_addresses=jresponse['deposit'])
+						block_io_btc.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_addresses=jresponse['deposit'], priority='low')
 						print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' withdrew '+str(amount)+' '+coin+' to '+address+'!  :+1:', username='pybot', icon_emoji=':robot_face:'))
 					except:
 						traceback.print_exc()
@@ -497,7 +497,7 @@ def main():
 						continue
 					amount = float(''.join(ele for ele in splitmessage[2] if ele.isdigit() or ele == '.'))
 					print(amount)
-					block_io_btc.withdraw_from_labels(amounts=amount, from_labels=j['user'], to_addresses=jresponse['deposit'])
+					block_io_btc.withdraw_from_labels(amounts=amount, from_labels=j['user'], to_addresses=jresponse['deposit'], priority='low')
 					print(sc.api_call("chat.postMessage", channel=j['channel'], text=j['user']+' shifted '+str(amount)+' btc to doge!  :unicorn_face:', username='pybot', icon_emoji=':robot_face:'))
 				except:
 					try:
@@ -505,7 +505,7 @@ def main():
 						splitexc = exc.split()
 						n = len(splitexc)-2
 						print(splitexc[n])					
-						block_io_btc.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_addresses=jresponse['deposit'])
+						block_io_btc.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_addresses=jresponse['deposit'], priority='low')
 						print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' withdrew '+str(amount)+' '+coin+' to '+address+'!  :+1:', username='pybot', icon_emoji=':robot_face:'))
 					except:
 						traceback.print_exc()
@@ -527,7 +527,7 @@ def main():
 						continue
 					amount = float(''.join(ele for ele in splitmessage[2] if ele.isdigit() or ele == '.'))
 					print(amount)
-					block_io_ltc.withdraw_from_labels(amounts=amount, from_labels=j['user'], to_addresses=jresponse['deposit'])
+					block_io_ltc.withdraw_from_labels(amounts=amount, from_labels=j['user'], to_addresses=jresponse['deposit'], priority='low')
 					print(sc.api_call("chat.postMessage", channel=j['channel'], text=j['user']+' shifted '+str(amount)+' ltc to doge!  :unicorn_face:', username='pybot', icon_emoji=':robot_face:'))
 				except:
 					try:
@@ -535,7 +535,7 @@ def main():
 						splitexc = exc.split()
 						n = len(splitexc)-2
 						print(splitexc[n])					
-						block_io_btc.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_addresses=jresponse['deposit'])
+						block_io_btc.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_addresses=jresponse['deposit'], priority='low')
 						print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' withdrew '+str(amount)+' '+coin+' to '+address+'!  :+1:', username='pybot', icon_emoji=':robot_face:'))
 					except:
 						traceback.print_exc()
@@ -557,7 +557,7 @@ def main():
 						continue
 					amount = float(''.join(ele for ele in splitmessage[2] if ele.isdigit() or ele == '.'))
 					print(amount)
-					block_io_ltc.withdraw_from_labels(amounts=amount, from_labels=j['user'], to_addresses=jresponse['deposit'])
+					block_io_ltc.withdraw_from_labels(amounts=amount, from_labels=j['user'], to_addresses=jresponse['deposit'], priority='low')
 					print(sc.api_call("chat.postMessage", channel=j['channel'], text=j['user']+' shifted '+str(amount)+' ltc to btc!  :unicorn_face:', username='pybot', icon_emoji=':robot_face:'))
 				except:
 					try:
@@ -565,7 +565,7 @@ def main():
 						splitexc = exc.split()
 						n = len(splitexc)-2
 						print(splitexc[n])					
-						block_io_btc.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_addresses=jresponse['deposit'])
+						block_io_btc.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_addresses=jresponse['deposit'], priority='low')
 						print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' withdrew '+str(amount)+' '+coin+' to '+address+'!  :+1:', username='pybot', icon_emoji=':robot_face:'))
 					except:
 						traceback.print_exc()
@@ -587,7 +587,7 @@ def main():
 						continue
 					amount = float(''.join(ele for ele in splitmessage[2] if ele.isdigit() or ele == '.'))
 					print(amount)
-					block_io_doge.withdraw_from_labels(amounts=amount, from_labels=j['user'], to_addresses=jresponse['deposit'])
+					block_io_doge.withdraw_from_labels(amounts=amount, from_labels=j['user'], to_addresses=jresponse['deposit'], priority='low')
 					print(sc.api_call("chat.postMessage", channel=j['channel'], text=j['user']+' shifted '+str(amount)+' doge to btc!  :unicorn_face:', username='pybot', icon_emoji=':robot_face:'))
 				except:
 					try:
@@ -595,7 +595,7 @@ def main():
 						splitexc = exc.split()
 						n = len(splitexc)-2
 						print(splitexc[n])					
-						block_io_btc.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_addresses=jresponse['deposit'])
+						block_io_btc.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_addresses=jresponse['deposit'], priority='low')
 						print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' withdrew '+str(amount)+' '+coin+' to '+address+'!  :+1:', username='pybot', icon_emoji=':robot_face:'))
 					except:
 						traceback.print_exc()
@@ -617,7 +617,7 @@ def main():
 						continue
 					amount = float(''.join(ele for ele in splitmessage[2] if ele.isdigit() or ele == '.'))
 					print(amount)
-					block_io_doge.withdraw_from_labels(amounts=amount, from_labels=j['user'], to_addresses=jresponse['deposit'])
+					block_io_doge.withdraw_from_labels(amounts=amount, from_labels=j['user'], to_addresses=jresponse['deposit'], priority='low')
 					print(sc.api_call("chat.postMessage", channel=j['channel'], text=j['user']+' shifted '+str(amount)+' doge to ltc!  :unicorn_face:', username='pybot', icon_emoji=':robot_face:'))
 				except:
 					try:
@@ -625,7 +625,7 @@ def main():
 						splitexc = exc.split()
 						n = len(splitexc)-2
 						print(splitexc[n])					
-						block_io_btc.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_addresses=jresponse['deposit'])
+						block_io_btc.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_addresses=jresponse['deposit'], priority='low')
 						print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' withdrew '+str(amount)+' '+coin+' to '+address+'!  :+1:', username='pybot', icon_emoji=':robot_face:'))
 					except:
 						traceback.print_exc()
