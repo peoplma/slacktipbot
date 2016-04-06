@@ -14,6 +14,9 @@ block_io_ltc = BlockIo(blockio_api_ltc_key, blockio_secret_pin, version)
 ss = SlackSocket(slack_token,translate=False) # translate will lookup and replace user and channel IDs with their human-readable names. default true. 
 sc = SlackClient(slack_token)
 url = 'https://shapeshift.io/shift'
+coincap_doge = 'http://www.coincap.io/page/DOGE'
+coincap_btc = 'http://www.coincap.io/page/BTC'
+coincap_ltc = 'http://www.coincap.io/page/LTC'
 shapeshift_pubkey = "06c04cfc9f18632d50ca546ba4f3dc49edcaf6217e3cefe73ed98d92cc2f37e764df8371fc3d23847aee4a4d65bdaa2defd30ca43311378827a94146feb017cb"
 min_amount = {'doge': 2.0, 'ltc': 0.002, 'btc': 0.00002}
 
@@ -702,24 +705,42 @@ def main():
 			try:
 				balance = block_io_doge.get_address_balance(labels=j['user'])
 				address = block_io_doge.get_address_by_label(label=j['user'])
-				print(sc.api_call("chat.postMessage", channel=j['channel'], text='%s - %s - %s doge' % (id2name[j['user']]+' dogecoin: ', address['data']['address'], balance['data']['available_balance']), username='pybot', icon_emoji=':robot_face:'))
+				c = requests.get(coincap_doge)
+				c_text = c.text
+				jc = json.loads(c_text)
+				print(jc['usdPrice'])
+				usd = float("{0:.2f}".format(float(balance['data']['available_balance'])*float(jc['usdPrice'])))
+				print(usd)
+				print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' dogecoin: - '+address['data']['address']+' - '+balance['data']['available_balance']+' doge  ~$'+str(usd), username='pybot', icon_emoji=':robot_face:'))
 			except:
 				traceback.print_exc()
 				print('failed to check doge for '+id2name[j['user']]+' ('+j['user']+')')
 			try:
-				balance = block_io_ltc.get_address_balance(labels=j['user'])
-				address = block_io_ltc.get_address_by_label(label=j['user'])
-				print(sc.api_call("chat.postMessage", channel=j['channel'], text='%s - %s - %s ltc' % (id2name[j['user']]+' litecoin: ', address['data']['address'], balance['data']['available_balance']), username='pybot', icon_emoji=':robot_face:'))
-			except:
-				traceback.print_exc()
-				print('failed to check ltc for '+id2name[j['user']]+' ('+j['user']+')')
-			try:
 				balance = block_io_btc.get_address_balance(labels=j['user'])
 				address = block_io_btc.get_address_by_label(label=j['user'])
-				print(sc.api_call("chat.postMessage", channel=j['channel'], text='%s - %s - %s btc' % (id2name[j['user']]+' bitcoin: ', address['data']['address'], balance['data']['available_balance']), username='pybot', icon_emoji=':robot_face:'))
+				c = requests.get(coincap_btc)
+				c_text = c.text
+				jc = json.loads(c_text)
+				print(jc['usdPrice'])
+				usd = float("{0:.2f}".format(float(balance['data']['available_balance'])*float(jc['usdPrice'])))
+				print(usd)
+				print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' bitcoin: - '+address['data']['address']+' - '+balance['data']['available_balance']+' btc  ~$'+str(usd), username='pybot', icon_emoji=':robot_face:'))
 			except:
 				traceback.print_exc()
 				print('failed to check btc for '+id2name[j['user']]+' ('+j['user']+')')
+			try:
+				balance = block_io_ltc.get_address_balance(labels=j['user'])
+				address = block_io_ltc.get_address_by_label(label=j['user'])
+				c = requests.get(coincap_ltc)
+				c_text = c.text
+				jc = json.loads(c_text)
+				print(jc['usdPrice'])
+				usd = float("{0:.2f}".format(float(balance['data']['available_balance'])*float(jc['usdPrice'])))
+				print(usd)
+				print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' litecoin: - '+address['data']['address']+' - '+balance['data']['available_balance']+' ltc  ~$'+str(usd), username='pybot', icon_emoji=':robot_face:'))
+			except:
+				traceback.print_exc()
+				print('failed to check ltc for '+id2name[j['user']]+' ('+j['user']+')')
 
 		# !tipbot help
 		elif command == 'help':
