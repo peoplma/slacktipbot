@@ -470,7 +470,7 @@ def main():
 					amount = float(''.join(ele for ele in splitmessage[2] if ele.isdigit() or ele == '.'))
 					print(amount)
 					block_io_btc.withdraw_from_labels(amounts=amount, from_labels=j['user'], to_addresses=jresponse['deposit'], priority='low')
-					print(sc.api_call("chat.postMessage", channel=j['channel'], text=j['user']+' shifted '+str(amount)+' btc to ltc!  :unicorn_face:', username='pybot', icon_emoji=':robot_face:'))
+					print(sc.api_call("chat.postMessage", channel=j['channel'], text=str(id2name[j['user']])+' shifted '+str(amount)+' btc to ltc!  :unicorn_face:', username='pybot', icon_emoji=':robot_face:'))
 				except:
 					try:
 						exc = traceback.format_exc()
@@ -478,7 +478,7 @@ def main():
 						n = len(splitexc)-2
 						print(splitexc[n])					
 						block_io_btc.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_addresses=jresponse['deposit'], priority='low')
-						print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' withdrew '+str(amount)+' '+coin+' to '+address+'!  :+1:', username='pybot', icon_emoji=':robot_face:'))
+						print(sc.api_call("chat.postMessage", channel=j['channel'], text=str(id2name[j['user']])+' shifted '+str(splitexc[n])+' btc to ltc  :unicorn_face:', username='pybot', icon_emoji=':robot_face:'))
 					except:
 						traceback.print_exc()
 						print('failed to shift')
@@ -501,7 +501,7 @@ def main():
 					amount = float(''.join(ele for ele in splitmessage[2] if ele.isdigit() or ele == '.'))
 					print(amount)
 					block_io_btc.withdraw_from_labels(amounts=amount, from_labels=j['user'], to_addresses=jresponse['deposit'], priority='low')
-					print(sc.api_call("chat.postMessage", channel=j['channel'], text=j['user']+' shifted '+str(amount)+' btc to doge!  :unicorn_face:', username='pybot', icon_emoji=':robot_face:'))
+					print(sc.api_call("chat.postMessage", channel=j['channel'], text=str(id2name[j['user']])+' shifted '+str(amount)+' btc to doge!  :unicorn_face:', username='pybot', icon_emoji=':robot_face:'))
 				except:
 					try:
 						exc = traceback.format_exc()
@@ -509,7 +509,7 @@ def main():
 						n = len(splitexc)-2
 						print(splitexc[n])					
 						block_io_btc.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_addresses=jresponse['deposit'], priority='low')
-						print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' withdrew '+str(amount)+' '+coin+' to '+address+'!  :+1:', username='pybot', icon_emoji=':robot_face:'))
+						print(sc.api_call("chat.postMessage", channel=j['channel'], text=str(id2name[j['user']])+' shifted '+str(splitexc[n])+' btc to doge!  :unicorn_face', username='pybot', icon_emoji=':robot_face:'))
 					except:
 						traceback.print_exc()
 						print('failed to shift')
@@ -531,15 +531,15 @@ def main():
 					amount = float(''.join(ele for ele in splitmessage[2] if ele.isdigit() or ele == '.'))
 					print(amount)
 					block_io_ltc.withdraw_from_labels(amounts=amount, from_labels=j['user'], to_addresses=jresponse['deposit'], priority='low')
-					print(sc.api_call("chat.postMessage", channel=j['channel'], text=j['user']+' shifted '+str(amount)+' ltc to doge!  :unicorn_face:', username='pybot', icon_emoji=':robot_face:'))
+					print(sc.api_call("chat.postMessage", channel=j['channel'], text=str(id2name[j['user']])+' shifted '+str(amount)+' ltc to doge!  :unicorn_face:', username='pybot', icon_emoji=':robot_face:'))
 				except:
 					try:
 						exc = traceback.format_exc()
 						splitexc = exc.split()
 						n = len(splitexc)-2
 						print(splitexc[n])					
-						block_io_btc.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_addresses=jresponse['deposit'], priority='low')
-						print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' withdrew '+str(amount)+' '+coin+' to '+address+'!  :+1:', username='pybot', icon_emoji=':robot_face:'))
+						block_io_ltc.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_addresses=jresponse['deposit'], priority='low')
+						print(sc.api_call("chat.postMessage", channel=j['channel'], text=str(id2name[j['user']])+' shifted '+str(splitexc[n])+' ltc to doge!  :unicorn_face:', username='pybot', icon_emoji=':robot_face:'))
 					except:
 						traceback.print_exc()
 						print('failed to shift')
@@ -561,15 +561,15 @@ def main():
 					amount = float(''.join(ele for ele in splitmessage[2] if ele.isdigit() or ele == '.'))
 					print(amount)
 					block_io_ltc.withdraw_from_labels(amounts=amount, from_labels=j['user'], to_addresses=jresponse['deposit'], priority='low')
-					print(sc.api_call("chat.postMessage", channel=j['channel'], text=j['user']+' shifted '+str(amount)+' ltc to btc!  :unicorn_face:', username='pybot', icon_emoji=':robot_face:'))
+					print(sc.api_call("chat.postMessage", channel=j['channel'], text=str(id2name[j['user']])+' shifted '+str(amount)+' ltc to btc!  :unicorn_face:', username='pybot', icon_emoji=':robot_face:'))
 				except:
 					try:
 						exc = traceback.format_exc()
 						splitexc = exc.split()
 						n = len(splitexc)-2
 						print(splitexc[n])					
-						block_io_btc.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_addresses=jresponse['deposit'], priority='low')
-						print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' withdrew '+str(amount)+' '+coin+' to '+address+'!  :+1:', username='pybot', icon_emoji=':robot_face:'))
+						block_io_ltc.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_addresses=jresponse['deposit'], priority='low')
+						print(sc.api_call("chat.postMessage", channel=j['channel'], text=str(id2name[j['user']])+' shifted '+str(splitexc[n])+' ltc to btc!  :unicorn_face:', username='pybot', icon_emoji=':robot_face:'))
 					except:
 						traceback.print_exc()
 						print('failed to shift')
@@ -591,15 +591,15 @@ def main():
 					amount = float(''.join(ele for ele in splitmessage[2] if ele.isdigit() or ele == '.'))
 					print(amount)
 					block_io_doge.withdraw_from_labels(amounts=amount, from_labels=j['user'], to_addresses=jresponse['deposit'], priority='low')
-					print(sc.api_call("chat.postMessage", channel=j['channel'], text=j['user']+' shifted '+str(amount)+' doge to btc!  :unicorn_face:', username='pybot', icon_emoji=':robot_face:'))
+					print(sc.api_call("chat.postMessage", channel=j['channel'], text=str(id2name[j['user']])+' shifted '+str(amount)+' doge to btc!  :unicorn_face:', username='pybot', icon_emoji=':robot_face:'))
 				except:
 					try:
 						exc = traceback.format_exc()
 						splitexc = exc.split()
 						n = len(splitexc)-2
 						print(splitexc[n])					
-						block_io_btc.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_addresses=jresponse['deposit'], priority='low')
-						print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' withdrew '+str(amount)+' '+coin+' to '+address+'!  :+1:', username='pybot', icon_emoji=':robot_face:'))
+						block_io_doge.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_addresses=jresponse['deposit'], priority='low')
+						print(sc.api_call("chat.postMessage", channel=j['channel'], text=str(id2name[j['user']])+' shifted '+str(splitexc[n])+' doge to btc!  :unicorn_face:', username='pybot', icon_emoji=':robot_face:'))
 					except:
 						traceback.print_exc()
 						print('failed to shift')
@@ -628,8 +628,8 @@ def main():
 						splitexc = exc.split()
 						n = len(splitexc)-2
 						print(splitexc[n])					
-						block_io_btc.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_addresses=jresponse['deposit'], priority='low')
-						print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' withdrew '+str(amount)+' '+coin+' to '+address+'!  :+1:', username='pybot', icon_emoji=':robot_face:'))
+						block_io_doge.withdraw_from_labels(amounts=splitexc[n], from_labels=j['user'], to_addresses=jresponse['deposit'], priority='low')
+						print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' shifted '+str(splitexc[n])+' doge to ltc!  :unicorn_face:', username='pybot', icon_emoji=':robot_face:'))
 					except:
 						traceback.print_exc()
 						print('failed to shift')
