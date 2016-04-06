@@ -8,7 +8,7 @@
 
 "!tipbot addresses coin" - lists all registered users' addresses and their balances.  coin can be btc, ltc, or doge
 
-"!tipbot tip username amount coin" - tips user indicated amount to their address.  Subamounts such as bits or satoshi are not accepted.  coin can be btc, ltc, or doge
+"!tipbot tip amount coin username" - tips user indicated amount to their address.  Subamounts such as bits or satoshi are not accepted.  coin can be btc, ltc, or doge
 
 "!tipbot make it rain coin amount" - tips everyone registered a share of indicated amount. Amount must be the last word in the command.  Subamounts such as bits or satoshi are not accepted.  coin can be btc, ltc, or doge
 
