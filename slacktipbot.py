@@ -245,12 +245,24 @@ def main():
 					for user in addresses['data']['addresses']:
 						if user['label'] in id2name.keys() and user['label'] != j['user']:
 							users.append(user['label'])
-
+					if len(splitmessage) > 6 and splitmessage[tipindex + 6] == 'online':
+						try:
+							user_on_list = sc.api_call("users.list", presence='1')
+							for o in range(0,99,1):
+								try:
+									if user_on_list['members'][o]['presence'] == 'away':
+										try:
+											users.remove(user_on_list['members'][o]['id'])
+										except:
+											continue
+								except:
+									continue
+						except:
+							continue
 					amounteach = amount / len(users)
 					if amounteach < min_amount[coin]:
 						print('amounteach too small ='+amounteach)
 						continue
-
 					tousers = str(','.join(user for user in users))
 					toreadable = str(','.join(id2name[user] for user in users))
 					toeach = str(','.join('%.8f'%amounteach for user in users))
@@ -261,6 +273,7 @@ def main():
 					traceback.print_exc()
 					print('failed to make it rain doge')
 					continue
+					
 			elif coin == 'ltc':
 				try:
 					addresses = block_io_ltc.get_my_addresses()
@@ -268,12 +281,24 @@ def main():
 					for user in addresses['data']['addresses']:
 						if user['label'] in id2name.keys() and user['label'] != j['user']:
 							users.append(user['label'])
-
+					if len(splitmessage) > 6 and splitmessage[tipindex + 6] == 'online':
+						try:
+							user_on_list = sc.api_call("users.list", presence='1')
+							for o in range(0,99,1):
+								try:
+									if user_on_list['members'][o]['presence'] == 'away':
+										try:
+											users.remove(user_on_list['members'][o]['id'])
+										except:
+											continue
+								except:
+									continue
+						except:
+							continue
 					amounteach = amount / len(users)
 					if amounteach < min_amount[coin]:
 						print('amounteach too small ='+amounteach)
 						continue
-
 					tousers = str(','.join(user for user in users))
 					toreadable = str(','.join(id2name[user] for user in users))
 					toeach = str(','.join('%.8f'%amounteach for user in users))
@@ -284,6 +309,7 @@ def main():
 					traceback.print_exc()
 					print('failed to make it rain ltc')
 					continue
+					
 			elif coin == 'btc':
 				try:
 					addresses = block_io_btc.get_my_addresses()
@@ -291,12 +317,24 @@ def main():
 					for user in addresses['data']['addresses']:
 						if user['label'] in id2name.keys() and user['label'] != j['user']:
 							users.append(user['label'])
-
+					if len(splitmessage) > 6 and splitmessage[tipindex + 6] == 'online':
+						try:
+							user_on_list = sc.api_call("users.list", presence='1')
+							for o in range(0,99,1):
+								try:
+									if user_on_list['members'][o]['presence'] == 'away':
+										try:
+											users.remove(user_on_list['members'][o]['id'])
+										except:
+											continue
+								except:
+									continue
+						except:
+							continue
 					amounteach = amount / len(users)
 					if amounteach < min_amount[coin]:
 						print('amounteach too small ='+amounteach)
 						continue
-
 					tousers = str(','.join(user for user in users))
 					toreadable = str(','.join(id2name[user] for user in users))
 					toeach = str(','.join('%.8f'%amounteach for user in users))
