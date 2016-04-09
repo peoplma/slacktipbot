@@ -3,6 +3,7 @@ import json
 import re
 import traceback
 import requests
+import threading
 from slacksocket import SlackSocket
 from slackclient import SlackClient
 from block_io import BlockIo
@@ -17,18 +18,17 @@ url = 'https://shapeshift.io/shift'
 coincap_doge = 'http://www.coincap.io/page/DOGE'
 coincap_btc = 'http://www.coincap.io/page/BTC'
 coincap_ltc = 'http://www.coincap.io/page/LTC'
+cryptocomp_doge = 'https://www.cryptocompare.com/api/data/price?fsym=DOGE&tsyms=USD'
+cryptocomp_btc = 'https://www.cryptocompare.com/api/data/price?fsym=BTC&tsyms=USD'
+cryptocomp_ltc = 'https://www.cryptocompare.com/api/data/price?fsym=LTC&tsyms=USD'
 shapeshift_pubkey = "06c04cfc9f18632d50ca546ba4f3dc49edcaf6217e3cefe73ed98d92cc2f37e764df8371fc3d23847aee4a4d65bdaa2defd30ca43311378827a94146feb017cb"
-min_amount = {'doge': 2.0, 'ltc': 0.002, 'btc': 0.00002}
+min_amount = {'doge': 2.0, 'ltc': 0.002, 'btc': 0.0002}
 
 def main():
 	time.sleep(1)
 	for event in ss.events():
 		j = json.loads(event.json)
 		if j['type'] != 'message':
-			continue
-			
-		if 'kill all humans' in str(j['text']):
-			print(sc.api_call("chat.postMessage", channel=j['channel'], text='http://i.imgur.com/nwLy8Rd.jpg', username='pybot', icon_emoji=':robot_face:'))
 			continue
 			
 		if '!tipbot' not in j['text']:
@@ -505,7 +505,7 @@ def main():
 						traceback.print_exc()
 						print('failed generate shapeshift transaction')
 						continue
-					amount = float(''.join(ele for ele in splitmessage[2] if ele.isdigit() or ele == '.'))
+					amount = float(''.join(ele for ele in splitmessage[tipindex + 2] if ele.isdigit() or ele == '.'))
 					print(amount)
 					block_io_btc.withdraw_from_labels(amounts=amount, from_labels=j['user'], to_addresses=jresponse['deposit'], priority='low')
 					print(sc.api_call("chat.postMessage", channel=j['channel'], text=str(id2name[j['user']])+' shifted '+str(amount)+' btc to ltc!  :unicorn_face:', username='pybot', icon_emoji=':robot_face:'))
@@ -536,7 +536,7 @@ def main():
 						traceback.print_exc()
 						print('failed generate shapeshift transaction')
 						continue
-					amount = float(''.join(ele for ele in splitmessage[2] if ele.isdigit() or ele == '.'))
+					amount = float(''.join(ele for ele in splitmessage[tipindex + 2] if ele.isdigit() or ele == '.'))
 					print(amount)
 					block_io_btc.withdraw_from_labels(amounts=amount, from_labels=j['user'], to_addresses=jresponse['deposit'], priority='low')
 					print(sc.api_call("chat.postMessage", channel=j['channel'], text=str(id2name[j['user']])+' shifted '+str(amount)+' btc to doge!  :unicorn_face:', username='pybot', icon_emoji=':robot_face:'))
@@ -566,7 +566,7 @@ def main():
 						traceback.print_exc()
 						print('failed generate shapeshift transaction')
 						continue
-					amount = float(''.join(ele for ele in splitmessage[2] if ele.isdigit() or ele == '.'))
+					amount = float(''.join(ele for ele in splitmessage[tipindex + 2] if ele.isdigit() or ele == '.'))
 					print(amount)
 					block_io_ltc.withdraw_from_labels(amounts=amount, from_labels=j['user'], to_addresses=jresponse['deposit'], priority='low')
 					print(sc.api_call("chat.postMessage", channel=j['channel'], text=str(id2name[j['user']])+' shifted '+str(amount)+' ltc to doge!  :unicorn_face:', username='pybot', icon_emoji=':robot_face:'))
@@ -596,7 +596,7 @@ def main():
 						traceback.print_exc()
 						print('failed generate shapeshift transaction')
 						continue
-					amount = float(''.join(ele for ele in splitmessage[2] if ele.isdigit() or ele == '.'))
+					amount = float(''.join(ele for ele in splitmessage[tipindex + 2] if ele.isdigit() or ele == '.'))
 					print(amount)
 					block_io_ltc.withdraw_from_labels(amounts=amount, from_labels=j['user'], to_addresses=jresponse['deposit'], priority='low')
 					print(sc.api_call("chat.postMessage", channel=j['channel'], text=str(id2name[j['user']])+' shifted '+str(amount)+' ltc to btc!  :unicorn_face:', username='pybot', icon_emoji=':robot_face:'))
@@ -626,7 +626,7 @@ def main():
 						traceback.print_exc()
 						print('failed generate shapeshift transaction')
 						continue
-					amount = float(''.join(ele for ele in splitmessage[2] if ele.isdigit() or ele == '.'))
+					amount = float(''.join(ele for ele in splitmessage[tipindex + 2] if ele.isdigit() or ele == '.'))
 					print(amount)
 					block_io_doge.withdraw_from_labels(amounts=amount, from_labels=j['user'], to_addresses=jresponse['deposit'], priority='low')
 					print(sc.api_call("chat.postMessage", channel=j['channel'], text=str(id2name[j['user']])+' shifted '+str(amount)+' doge to btc!  :unicorn_face:', username='pybot', icon_emoji=':robot_face:'))
@@ -656,7 +656,7 @@ def main():
 						traceback.print_exc()
 						print('failed generate shapeshift transaction')
 						continue
-					amount = float(''.join(ele for ele in splitmessage[2] if ele.isdigit() or ele == '.'))
+					amount = float(''.join(ele for ele in splitmessage[tipindex + 2] if ele.isdigit() or ele == '.'))
 					print(amount)
 					block_io_doge.withdraw_from_labels(amounts=amount, from_labels=j['user'], to_addresses=jresponse['deposit'], priority='low')
 					print(sc.api_call("chat.postMessage", channel=j['channel'], text=j['user']+' shifted '+str(amount)+' doge to ltc!  :unicorn_face:', username='pybot', icon_emoji=':robot_face:'))
@@ -743,39 +743,62 @@ def main():
 			try:
 				balance = block_io_doge.get_address_balance(labels=j['user'])
 				address = block_io_doge.get_address_by_label(label=j['user'])
-				c = requests.get(coincap_doge)
-				c_text = c.text
-				jc = json.loads(c_text)
-				print(jc['usdPrice'])
-				usd = float("{0:.2f}".format(float(balance['data']['available_balance'])*float(jc['usdPrice'])))
-				print(usd)
-				print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' dogecoin: - '+address['data']['address']+' - '+balance['data']['available_balance']+' doge  ~$'+str(usd), username='pybot', icon_emoji=':robot_face:'))
+				try:
+					c_doge = requests.get(coincap_doge)
+					c_text_doge = c_doge.text
+					jc_doge = json.loads(c_text_doge)
+					print('doge $'+str(jc_doge['usdPrice']))
+					usd_doge = float("{0:.2f}".format(float(balance['data']['available_balance'])*float(jc_doge['usdPrice'])))
+					print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' dogecoin: - '+address['data']['address']+' - '+balance['data']['available_balance']+' doge  ~$'+str(usd_doge), username='pybot', icon_emoji=':robot_face:'))
+				except:
+					c_doge = requests.get(cryptocomp_doge)
+					c_text_doge = c_doge.text
+					jc_doge = json.loads(c_text_doge)
+					print('doge $'+str(jc_doge['Data'][0]['Price']))
+					usd_doge = float("{0:.2f}".format(float(balance['data']['available_balance'])*float(jc_doge['Data'][0]['Price'])))
+					print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' dogecoin: - '+address['data']['address']+' - '+balance['data']['available_balance']+' doge  ~$'+str(usd_doge), username='pybot', icon_emoji=':robot_face:'))
 			except:
 				traceback.print_exc()
 				print('failed to check doge for '+id2name[j['user']]+' ('+j['user']+')')
 			try:
 				balance = block_io_btc.get_address_balance(labels=j['user'])
 				address = block_io_btc.get_address_by_label(label=j['user'])
-				c = requests.get(coincap_btc)
-				c_text = c.text
-				jc = json.loads(c_text)
-				print(jc['usdPrice'])
-				usd = float("{0:.2f}".format(float(balance['data']['available_balance'])*float(jc['usdPrice'])))
-				print(usd)
-				print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' bitcoin: - '+address['data']['address']+' - '+balance['data']['available_balance']+' btc  ~$'+str(usd), username='pybot', icon_emoji=':robot_face:'))
+				try:
+					c_btc = requests.get(coincap_btc)
+					c_text_btc = c_btc.text
+					jc_btc = json.loads(c_text_btc)
+					print('btc $'+str(jc_btc['usdPrice']))
+					usd_btc = float("{0:.2f}".format(float(balance['data']['available_balance'])*float(jc_btc['usdPrice'])))
+					print(usd_btc)
+					print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' bitcoin: - '+address['data']['address']+' - '+balance['data']['available_balance']+' btc  ~$'+str(usd_btc), username='pybot', icon_emoji=':robot_face:'))
+				except:
+					c_btc = requests.get(cryptocomp_btc)
+					c_text_btc = c_btc.text
+					jc_btc = json.loads(c_text_btc)
+					print('btc $'+str(jc_btc['Data'][0]['Price']))
+					usd_btc = float("{0:.2f}".format(float(balance['data']['available_balance'])*float(jc_btc['Data'][0]['Price'])))
+					print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' btccoin: - '+address['data']['address']+' - '+balance['data']['available_balance']+' btc  ~$'+str(usd_btc), username='pybot', icon_emoji=':robot_face:'))			
 			except:
 				traceback.print_exc()
 				print('failed to check btc for '+id2name[j['user']]+' ('+j['user']+')')
 			try:
 				balance = block_io_ltc.get_address_balance(labels=j['user'])
 				address = block_io_ltc.get_address_by_label(label=j['user'])
-				c = requests.get(coincap_ltc)
-				c_text = c.text
-				jc = json.loads(c_text)
-				print(jc['usdPrice'])
-				usd = float("{0:.2f}".format(float(balance['data']['available_balance'])*float(jc['usdPrice'])))
-				print(usd)
-				print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' litecoin: - '+address['data']['address']+' - '+balance['data']['available_balance']+' ltc  ~$'+str(usd), username='pybot', icon_emoji=':robot_face:'))
+				try:
+					c_ltc = requests.get(coincap_ltc)
+					c_text_ltc = c_ltc.text
+					jc_ltc = json.loads(c_text_ltc)
+					print('ltc $'+str(jc_ltc['usdPrice']))
+					usd_ltc = float("{0:.2f}".format(float(balance['data']['available_balance'])*float(jc_ltc['usdPrice'])))
+					print(usd_ltc)
+					print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' litecoin: - '+address['data']['address']+' - '+balance['data']['available_balance']+' ltc  ~$'+str(usd_ltc), username='pybot', icon_emoji=':robot_face:'))
+				except:
+					c_ltc = requests.get(cryptocomp_ltc)
+					c_text_ltc = c_ltc.text
+					jc_ltc = json.loads(c_text_ltc)
+					print('ltc $'+str(jc_ltc['Data'][0]['Price']))
+					usd_ltc = float("{0:.2f}".format(float(balance['data']['available_balance'])*float(jc_ltc['Data'][0]['Price'])))
+					print(sc.api_call("chat.postMessage", channel=j['channel'], text=id2name[j['user']]+' ltccoin: - '+address['data']['address']+' - '+balance['data']['available_balance']+' ltc  ~$'+str(usd_ltc), username='pybot', icon_emoji=':robot_face:'))			
 			except:
 				traceback.print_exc()
 				print('failed to check ltc for '+id2name[j['user']]+' ('+j['user']+')')
@@ -783,7 +806,7 @@ def main():
 		# !tipbot help
 		elif command == 'help':
 			print(sc.api_call("chat.postMessage", channel=j['channel'], text='https://github.com/peoplma/slacktipbot', username='pybot', icon_emoji=':robot_face:'))
-			
+
 def secondary():
 	try:
 		while True:
