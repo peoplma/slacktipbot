@@ -94,7 +94,7 @@ def main():
 				if splitmessage[i] in name2id.keys():
 					users.append(splitmessage[i]);
 				if name2id[splitmessage[i]] not in reg_users:
-					print(sc.api_call("chat.postMessage", channel=j['channel'], text=splitmessage[i]+' is not registed.  Please !tipbot register ', username='pybot', icon_emoji=':robot_face:'))
+					print(sc.api_call("chat.postMessage", channel=j['channel'], text=splitmessage[i]+' is not registered.  Please !tipbot register ', username='pybot', icon_emoji=':robot_face:'))
 				
 			# build api strings
 			tousers = str(','.join(name2id[user] for user in users))
