@@ -10,7 +10,7 @@
 
 "!tipbot tip amount coin username" - tips user indicated amount to their address.  Subamounts such as bits or satoshi are not accepted.  coin can be btc, ltc, or doge
 
-"!tipbot make it rain coin amount" - tips everyone registered a share of indicated amount. Amount must be the last word in the command, unless you add "online" as the last word, then it will make it rain only for users who are currently online in your Slack channel.  Subamounts such as bits or satoshi are not accepted.  coin can be btc, ltc, or doge
+"!tipbot make it rain amount coin" - tips everyone registered a share of indicated amount. Amount must be the last word in the command, unless you add "online" as the last word, then it will make it rain only for users who are currently online in your Slack channel.  Subamounts such as bits or satoshi are not accepted.  coin can be btc, ltc, or doge
 
 "!tipbot withdraw amount coin address" - withdraws indicated amount to indicated address.  Address must be the last word listed in command. Subamounts such as bits or satoshi are not accepted.  coin can be btc, ltc, or doge
 
