@@ -800,14 +800,12 @@ def main():
 		elif command == 'help':
 			print(sc.api_call("chat.postMessage", channel=j['channel'], text='https://github.com/peoplma/slacktipbot', username='pybot', icon_emoji=':robot_face:'))
 
-def secondary():
-	try:
-		while True:
-			main()
-	except:
-		traceback.print_exc()
-		print('Resuming in 2sec...')
-		time.sleep(2)
-		print('Resumed')
+
 while True:
-	secondary()
+    try:
+        main()
+    except:
+        traceback.print_exc()
+        print('Resuming in 2sec...')
+        time.sleep(2)
+        print('Resumed')
