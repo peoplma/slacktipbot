@@ -55,39 +55,46 @@ class Bot:
                              text='https://github.com/peoplma/slacktipbot-origin', username='pybot',
                              icon_emoji=':robot_face:'))
 
+    def get_coin_value(coin, balance):
+        try:
+            c_currency = requests.get(coincap[coin])
+            jc_currency = c_currency.json()
+            print(coin + ' $' + str(jc_currency['usdPrice']))
+            usd_currency = float(
+                "{0:.2f}".format(float(balance['data']['available_balance']) * float(jc_currency['usdPrice'])))
+            return usd_currency
+        except:
+            try:
+                c_currency = requests.get(cryptocompare[coin])
+                jc_currency = c_currency.json()
+                print(coin + ' $' + str(jc_currency['Data'][0]['Price']))
+                usd_currency = float(
+                    "{0:.2f}".format(
+                        float(balance['data']['available_balance']) * float(jc_currency['Data'][0]['Price'])))
+                return usd_currency
+            except:
+                traceback.print_exc()
+
     def check(self):
         for currency_name, currency in self.block_io.items():
             try:
                 balance = currency.get_address_balance(labels=self.j['user'])
                 address = currency.get_address_by_label(label=self.j['user'])
-                try:
-                    c_doge = requests.get(coincap[currency_name])
-                    jc_doge = c_doge.json()
-                    print('doge $' + str(jc_doge['usdPrice']))
-                    usd_doge = float(
-                        "{0:.2f}".format(float(balance['data']['available_balance']) * float(jc_doge['usdPrice'])))
-                    print(usd_doge)
-                    print(self.sc.api_call("chat.postMessage", channel=self.j['channel'],
-                                           text=self.id2name[self.j['user']] + ' dogecoin: - ' + address['data'][
-                                               'address'] + ' - ' +
-                                                balance['data']['available_balance'] + currency_name + ' ~$' + str(
-                                               usd_doge),
-                                           username='pybot', icon_emoji=':robot_face:'))
-                except:
-                    c_doge = requests.get(cryptocompare[currency_name])
-                    jc_doge = c_doge.json()
-                    print('doge $' + str(jc_doge['Data'][0]['Price']))
-                    usd_doge = float("{0:.2f}".format(
-                        float(balance['data']['available_balance']) * float(jc_doge['Data'][0]['Price'])))
-                    print(self.sc.api_call("chat.postMessage", channel=self.j['channel'],
-                                           text=self.id2name[self.j['user']] + currency_name + ': - ' + address['data'][
-                                               'address'] + ' - ' +
-                                                balance['data']['available_balance'] + currency_name + '  ~$' + str(
-                                               usd_doge),
-                                           username='pybot', icon_emoji=':robot_face:'))
+
+                usd_currency = self.get_coin_value(currency_name, balance)
+                print(usd_currency)
+                message = self.id2name[self.j['user']] + currency_name \
+                          + ': - ' \
+                          + address['data']['address'] + ' - ' \
+                          + balance['data']['available_balance'] \
+                          + currency_name + ' ~$' \
+                          + str(usd_currency)
+                print(self.sc.api_call("chat.postMessage", channel=self.j['channel'], text=message, username='pybot',
+                                       icon_emoji=':robot_face:'))
             except:
                 traceback.print_exc()
-                print('failed to check doge for ' + self.id2name[self.j['user']] + ' (' + self.j['user'] + ')')
+                print('failed to check ' + currency_name + ' for ' + self.id2name[self.j['user']] + ' (' + self.j[
+                    'user'] + ')')
 
     def register(self):
         for currency_name, currency in self.block_io.items():
@@ -152,7 +159,7 @@ class Bot:
 
         # get list of valid users from command
         users = []
-        accounts = self.block_io['doge'].get_my_addresses()
+        accounts = self.block_io[coin].get_my_addresses()
         reg_users = []
         for g in range(0, len(accounts['data']['addresses']), 1):
             try:
@@ -177,16 +184,17 @@ class Bot:
 
         if self.split_message[self.tip_index + 2] == 'all':
             try:
-                balance_doge = self.block_io[coin].get_address_balance(labels=self.j['user'])
-                print(balance_doge['data']['available_balance'])
-                fee = self.block_io[coin].get_network_fee_estimate(amounts=balance_doge['data']['available_balance'],
-                                                                     to_labels=to_users, priority='low')
+                balance_currency = self.block_io[coin].get_address_balance(labels=self.j['user'])
+                print(balance_currency['data']['available_balance'])
+                fee = self.block_io[coin].get_network_fee_estimate(
+                    amounts=balance_currency['data']['available_balance'],
+                    to_labels=to_users, priority='low')
                 print(fee)
-                balance_minus_fee = float(balance_doge['data']['available_balance']) - float(
+                balance_minus_fee = float(balance_currency['data']['available_balance']) - float(
                     fee['data']['estimated_network_fee'])
                 print(balance_minus_fee)
                 self.block_io[coin].withdraw_from_labels(amounts=balance_minus_fee, from_labels=self.j['user'],
-                                                           to_labels=to_users, priority='low')
+                                                         to_labels=to_users, priority='low')
                 print(self.sc.api_call("chat.postMessage", channel=self.j['channel'],
                                        text=self.id2name[self.j['user']] + ' tipped ' + str(
                                            balance_minus_fee) + ' ' + coin + ' to ' + to_readable + '!  :+1:',
@@ -198,23 +206,24 @@ class Bot:
                     n = len(splitexc) - 2
                     print(splitexc[n])
                     self.block_io[coin].withdraw_from_labels(amounts=splitexc[n], from_labels=self.j['user'],
-                                                               to_labels=to_users, priority='low')
+                                                             to_labels=to_users, priority='low')
                     print(self.sc.api_call("chat.postMessage", channel=self.j['channel'],
-                                      text=self.id2name[self.j['user']] + ' tipped ' + str(
-                                          splitexc[n]) + ' ' + coin + ' to ' + to_readable + '!  :+1:',
-                                      username='pybot', icon_emoji=':robot_face:'))
+                                           text=self.id2name[self.j['user']] + ' tipped ' + str(
+                                               splitexc[n]) + ' ' + coin + ' to ' + to_readable + '!  :+1:',
+                                           username='pybot', icon_emoji=':robot_face:'))
                 except:
                     traceback.print_exc()
-                    print('failed to tip all '+coin)
+                    print('failed to tip all ' + coin)
                     return
         else:
             try:
-                self.block_io[coin].withdraw_from_labels(amounts=to_each, from_labels=self.j['user'], to_labels=to_users,
-                                                           priority='low')
+                self.block_io[coin].withdraw_from_labels(amounts=to_each, from_labels=self.j['user'],
+                                                         to_labels=to_users,
+                                                         priority='low')
                 print(self.sc.api_call("chat.postMessage", channel=self.j['channel'],
-                                  text=self.id2name[self.j['user']] + ' tipped ' + to_readable + ' ' + str(
-                                      amount) + ' ' + coin + '!  :moon:', username='pybot',
-                                  icon_emoji=':robot_face:'))
+                                       text=self.id2name[self.j['user']] + ' tipped ' + to_readable + ' ' + str(
+                                           amount) + ' ' + coin + '!  :moon:', username='pybot',
+                                       icon_emoji=':robot_face:'))
             except:
                 try:
                     exc = traceback.format_exc()
@@ -222,14 +231,14 @@ class Bot:
                     n = len(splitexc) - 2
                     print(splitexc[n])
                     self.block_io[coin].withdraw_from_labels(amounts=splitexc[n], from_labels=self.j['user'],
-                                                               to_labels=to_users, priority='low')
+                                                             to_labels=to_users, priority='low')
                     print(self.sc.api_call("chat.postMessage", channel=self.j['channel'],
-                                      text=self.id2name[self.j['user']] + ' tipped ' + str(
-                                          splitexc[n]) + ' ' + coin + ' to ' + to_readable + '!  :+1:',
-                                      username='pybot', icon_emoji=':robot_face:'))
+                                           text=self.id2name[self.j['user']] + ' tipped ' + str(
+                                               splitexc[n]) + ' ' + coin + ' to ' + to_readable + '!  :+1:',
+                                           username='pybot', icon_emoji=':robot_face:'))
                 except:
                     traceback.print_exc()
-                    print('failed to tip all '+coin)
+                    print('failed to tip all ' + coin)
                     return
 
     def make(self):
@@ -276,22 +285,21 @@ class Bot:
             if amount_each < min_amount[coin]:
                 print('amounteach too small =' + amount_each)
                 return
-            tousers = str(','.join(user for user in users))
-            toreadable = str(','.join(self.id2name[user] for user in users))
-            toeach = str(','.join('%.8f' % amount_each for user in users))
+            to_users = str(','.join(user for user in users))
+            to_readable = str(','.join(self.id2name[user] for user in users))
+            to_each = str(','.join('%.8f' % amount_each for user in users))
             print(self.id2name[self.j['user']] + ' (' + self.j[
-                'user'] + ') made it rain on ' + toreadable + ' (' + tousers + ') ' + str(
+                'user'] + ') made it rain on ' + to_readable + ' (' + to_users + ') ' + str(
                 amount) + ' (' + '%.8f' % amount_each + ' each)');
-            self.block_io[coin].withdraw_from_labels(amounts=toeach, from_labels=self.j['user'], to_labels=tousers,
-                                                       priority='low')
+            self.block_io[coin].withdraw_from_labels(amounts=to_each, from_labels=self.j['user'], to_labels=to_users,
+                                                     priority='low')
             print(self.sc.api_call("chat.postMessage", channel=self.j['channel'], text=self.id2name[self.j[
-                'user']] + ' tipped  ' + toreadable + ' ' + '%.8f' % amount_each + ' ' + coin + '!  :moon:',
-                              username='pybot', icon_emoji=':robot_face:'))
+                'user']] + ' tipped  ' + to_readable + ' ' + '%.8f' % amount_each + ' ' + coin + '!  :moon:',
+                                   username='pybot', icon_emoji=':robot_face:'))
         except:
             traceback.print_exc()
-            print('failed to make it rain '+coin)
+            print('failed to make it rain ' + coin)
             return
-
 
     def withdraw(self):
         if len(self.split_message) < (self.tip_index + 4):
@@ -305,24 +313,27 @@ class Bot:
             print('unknown coin =' + coin)
             return
 
-        print(self.id2name[self.j['user']] + ' (' + self.j['user'] + ') withdraws ' + amount + ' ' + coin + ' to ' + address)
+        print(
+            self.id2name[self.j['user']] + ' (' + self.j[
+                'user'] + ') withdraws ' + amount + ' ' + coin + ' to ' + address)
 
         if amount == 'all':
             try:
-                balance_doge = self.block_io[coin].get_address_balance(labels=self.j['user'])
-                print(balance_doge['data']['available_balance'])
-                fee = self.block_io[coin].get_network_fee_estimate(amounts=balance_doge['data']['available_balance'],
-                                                                     to_addresses=address, priority='low')
+                balance_currency = self.block_io[coin].get_address_balance(labels=self.j['user'])
+                print(balance_currency['data']['available_balance'])
+                fee = self.block_io[coin].get_network_fee_estimate(
+                    amounts=balance_currency['data']['available_balance'],
+                    to_addresses=address, priority='low')
                 print(fee)
-                balance_minus_fee = float(balance_doge['data']['available_balance']) - float(
+                balance_minus_fee = float(balance_currency['data']['available_balance']) - float(
                     fee['data']['estimated_network_fee'])
                 print(balance_minus_fee)
                 self.block_io[coin].withdraw_from_labels(amounts=balance_minus_fee, from_labels=self.j['user'],
-                                                           to_addresses=address, priority='low')
+                                                         to_addresses=address, priority='low')
                 print(self.sc.api_call("chat.postMessage", channel=self.j['channel'],
-                                  text=self.id2name[self.j['user']] + ' withdrew ' + str(
-                                      amount) + ' ' + coin + ' to ' + address + '!  :+1:', username='pybot',
-                                  icon_emoji=':robot_face:'))
+                                       text=self.id2name[self.j['user']] + ' withdrew ' + str(
+                                           amount) + ' ' + coin + ' to ' + address + '!  :+1:', username='pybot',
+                                       icon_emoji=':robot_face:'))
             except:
                 try:
                     exc = traceback.format_exc()
@@ -330,23 +341,24 @@ class Bot:
                     n = len(splitexc) - 2
                     print(splitexc[n])
                     self.block_io[coin].withdraw_from_labels(amounts=splitexc[n], from_labels=self.j['user'],
-                                                               to_addresses=address, priority='low')
+                                                             to_addresses=address, priority='low')
                     print(self.sc.api_call("chat.postMessage", channel=self.j['channel'],
-                                      text=self.id2name[self.j['user']] + ' withdrew ' + str(
-                                          amount) + ' ' + coin + ' to ' + address + '!  :+1:', username='pybot',
-                                      icon_emoji=':robot_face:'))
+                                           text=self.id2name[self.j['user']] + ' withdrew ' + str(
+                                               amount) + ' ' + coin + ' to ' + address + '!  :+1:', username='pybot',
+                                           icon_emoji=':robot_face:'))
                 except:
                     traceback.print_exc()
-                    print('failed to withdraw doge')
+                    print('failed to withdraw ' + coin)
                     return
         else:
             try:
-                self.block_io[coin].withdraw_from_labels(amounts=amount, from_labels=self.j['user'], to_addresses=address,
-                                                           priority='low')
+                self.block_io[coin].withdraw_from_labels(amounts=amount, from_labels=self.j['user'],
+                                                         to_addresses=address,
+                                                         priority='low')
                 print(self.sc.api_call("chat.postMessage", channel=self.j['channel'],
-                                  text=self.id2name[self.j['user']] + ' withdrew ' + str(
-                                      amount) + ' ' + coin + ' to ' + address + '!  :+1:', username='pybot',
-                                  icon_emoji=':robot_face:'))
+                                       text=self.id2name[self.j['user']] + ' withdrew ' + str(
+                                           amount) + ' ' + coin + ' to ' + address + '!  :+1:', username='pybot',
+                                       icon_emoji=':robot_face:'))
             except:
                 try:
                     exc = traceback.format_exc()
@@ -354,16 +366,15 @@ class Bot:
                     n = len(splitexc) - 2
                     print(splitexc[n])
                     self.block_io[coin].withdraw_from_labels(amounts=splitexc[n], from_labels=self.j['user'],
-                                                               to_addresses=address, priority='low')
+                                                             to_addresses=address, priority='low')
                     print(self.sc.api_call("chat.postMessage", channel=self.j['channel'],
-                                      text=self.id2name[self.j['user']] + ' withdrew ' + str(
-                                          splitexc[n]) + ' ' + coin + ' to ' + address + '!  :+1:',
-                                      username='pybot', icon_emoji=':robot_face:'))
+                                           text=self.id2name[self.j['user']] + ' withdrew ' + str(
+                                               splitexc[n]) + ' ' + coin + ' to ' + address + '!  :+1:',
+                                           username='pybot', icon_emoji=':robot_face:'))
                 except:
                     traceback.print_exc()
-                    print('failed to withdraw doge')
+                    print('failed to withdraw ' + coin)
                     return
-
 
     def shift(self):
         if len(self.split_message) < (self.tip_index + 3):
@@ -381,15 +392,15 @@ class Bot:
         coin_shift = coin.split('_')
         if coin == 'btc_ltc':
             try:
-                address_btc = self.block_io[coin_shift[0]].get_address_by_label(label=self.j['user'])
-                address_ltc = self.block_io[coin_shift[1]].get_address_by_label(label=self.j['user'])
-                payload = {"withdrawal": address_ltc['data']['address'], "pair": "btc_ltc",
-                           "returnAddress": address_btc['data']['address'], "apiKey": shapeshift_pubkey}
+                address_from = self.block_io[coin_shift[0]].get_address_by_label(label=self.j['user'])
+                address_to = self.block_io[coin_shift[1]].get_address_by_label(label=self.j['user'])
+                payload = {"withdrawal": address_to['data']['address'], "pair": "btc_ltc",
+                           "returnAddress": address_from['data']['address'], "apiKey": shapeshift_pubkey}
                 print(payload)
                 try:
                     r = requests.post(url, data=payload)
-                    jresponse = r.json()
-                    print(jresponse)
+                    j_response = r.json()
+                    print(j_response)
                 except:
                     traceback.print_exc()
                     print('failed generate shapeshift transaction')
@@ -398,25 +409,26 @@ class Bot:
                     ''.join(ele for ele in self.split_message[self.tip_index + 2] if ele.isdigit() or ele == '.'))
                 print(amount)
                 self.block_io['btc'].withdraw_from_labels(amounts=amount, from_labels=self.j['user'],
-                                                          to_addresses=jresponse['deposit'], priority='low')
+                                                          to_addresses=j_response['deposit'], priority='low')
                 print(self.sc.api_call("chat.postMessage", channel=self.j['channel'],
                                        text=str(self.id2name[self.j['user']]) + ' shifted ' + str(
-                                           amount) + coin_shift[0] + ' to '+coin_shift[1]+'!  :unicorn_face:', username='pybot',
+                                           amount) + coin_shift[0] + ' to ' + coin_shift[1] + '!  :unicorn_face:',
+                                       username='pybot',
                                        icon_emoji=':robot_face:'))
             except:
                 try:
                     exc = traceback.format_exc()
-                    splitexc = exc.split()
-                    n = len(splitexc) - 2
-                    print(splitexc[n])
-                    self.block_io['btc'].withdraw_from_labels(amounts=splitexc[n], from_labels=self.j['user'],
-                                                              to_addresses=jresponse['deposit'], priority='low')
+                    split_exc = exc.split()
+                    n = len(split_exc) - 2
+                    print(split_exc[n])
+                    self.block_io['btc'].withdraw_from_labels(amounts=split_exc[n], from_labels=self.j['user'],
+                                                              to_addresses=j_response['deposit'], priority='low')
                     print(self.sc.api_call("chat.postMessage", channel=self.j['channel'],
-                                      text=str(self.id2name[self.j['user']]) + ' shifted ' + str(
-                                          splitexc[n])  + coin_shift[0] + ' to '+coin_shift[1]+ ' :unicorn_face:', username='pybot',
-                                      icon_emoji=':robot_face:'))
+                                           text=str(self.id2name[self.j['user']]) + ' shifted ' + str(
+                                               split_exc[n]) + coin_shift[0] + ' to ' + coin_shift[
+                                                    1] + ' :unicorn_face:', username='pybot',
+                                           icon_emoji=':robot_face:'))
                 except:
                     traceback.print_exc()
-                    print('failed to shift'+ coin_shift[0] + ' to '+coin_shift[1])
+                    print('failed to shift' + coin_shift[0] + ' to ' + coin_shift[1])
                     return
-
