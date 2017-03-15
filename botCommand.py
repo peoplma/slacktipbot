@@ -62,8 +62,7 @@ class Bot:
                 address = currency.get_address_by_label(label=self.j['user'])
                 try:
                     c_doge = requests.get(coincap[currency_name])
-                    c_text_doge = c_doge.text
-                    jc_doge = json.loads(c_text_doge)
+                    jc_doge = c_doge.json()
                     print('doge $' + str(jc_doge['usdPrice']))
                     usd_doge = float(
                         "{0:.2f}".format(float(balance['data']['available_balance']) * float(jc_doge['usdPrice'])))
@@ -76,8 +75,7 @@ class Bot:
                                            username='pybot', icon_emoji=':robot_face:'))
                 except:
                     c_doge = requests.get(cryptocompare[currency_name])
-                    c_text_doge = c_doge.text
-                    jc_doge = json.loads(c_text_doge)
+                    jc_doge = c_doge.json()
                     print('doge $' + str(jc_doge['Data'][0]['Price']))
                     usd_doge = float("{0:.2f}".format(
                         float(balance['data']['available_balance']) * float(jc_doge['Data'][0]['Price'])))
@@ -390,8 +388,7 @@ class Bot:
                 print(payload)
                 try:
                     r = requests.post(url, data=payload)
-                    response = r.text
-                    jresponse = json.loads(response)
+                    jresponse = r.json()
                     print(jresponse)
                 except:
                     traceback.print_exc()
