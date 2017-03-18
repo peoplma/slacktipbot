@@ -154,7 +154,7 @@ class Bot:
                 print('amount too low =' + self.split_message[self.tip_index + 2])
                 print(self.send_message(self.j['channel'],
                                         'Sorry ' + self.id2name[self.j['user']] + ', you need to tip at least ' +
-                                        min_amount[coin] + ' LTC'))
+                                        min_amount[coin] + ' ' + coin))
                 return
 
         # get list of valid users from command
@@ -256,7 +256,7 @@ class Bot:
             print('amount too low =' + self.split_message[self.tip_index + 4])
             print(self.send_message(self.j['channel'],
                                     'Sorry ' + self.id2name[self.j['user']] + ', you need to tip at least ' +
-                                    min_amount[coin] + ' LTC'))
+                                    min_amount[coin] + ' ' + coin))
             return
 
         try:
@@ -282,6 +282,9 @@ class Bot:
             amount_each = amount / len(users)
             if amount_each < min_amount[coin]:
                 print('amounteach too small =' + amount_each)
+                print(self.send_message(self.j['channel'],
+                                        'Sorry ' + self.id2name[self.j['user']] + ', you need to tip at least ' +
+                                        min_amount[coin] + ' ' + coin))
                 return
             to_users = str(','.join(user for user in users))
             to_readable = str(','.join(self.id2name[user] for user in users))
