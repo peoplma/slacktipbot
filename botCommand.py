@@ -152,7 +152,9 @@ class Bot:
                 return
             if amount < min_amount[coin]:
                 print('amount too low =' + self.split_message[self.tip_index + 2])
-                print(self.send_message(self.j['channel'],'Sorry '+self.id2name[self.j['user']] + ', you need to tip at least '+min_amount[coin]+' LTC'))
+                print(self.send_message(self.j['channel'],
+                                        'Sorry ' + self.id2name[self.j['user']] + ', you need to tip at least ' +
+                                        min_amount[coin] + ' LTC'))
                 return
 
         # get list of valid users from command
@@ -252,6 +254,9 @@ class Bot:
             return
         if amount < min_amount[coin]:
             print('amount too low =' + self.split_message[self.tip_index + 4])
+            print(self.send_message(self.j['channel'],
+                                    'Sorry ' + self.id2name[self.j['user']] + ', you need to tip at least ' +
+                                    min_amount[coin] + ' LTC'))
             return
 
         try:
